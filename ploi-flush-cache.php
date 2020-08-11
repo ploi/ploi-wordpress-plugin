@@ -16,3 +16,5 @@ define('PLOI_PATH', plugin_dir_path(__FILE__));
 
 require_once 'inc/plugin-settings.php';
 require_once 'inc/PloiCache.php';
+require_once 'inc/Crypto.php';
+

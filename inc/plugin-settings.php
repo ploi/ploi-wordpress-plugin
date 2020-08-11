@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or exit;
 
 class PloiFlushCacheSettings
 {
@@ -9,7 +10,6 @@ class PloiFlushCacheSettings
         add_action('admin_menu', [$this, 'ploi_settings_add_plugin_page']);
         add_action('admin_init', [$this, 'ploi_settings_page_init']);
         add_action('admin_bar_menu', [$this, 'add_toolbar_items'], 100);
-        add_action('parse_request', [$this, 'prediction_force_update_url_handler']);
     }
 
 
@@ -31,7 +31,7 @@ class PloiFlushCacheSettings
         <div class="wrap">
             <h2>Ploi Cache Settings</h2>
             <p></p>
-            <?php settings_errors(); ?>
+            <?php settings_errors('ploi-settings'); ?>
 
             <form method="post" action="options.php">
                 <?php
@@ -41,7 +41,8 @@ class PloiFlushCacheSettings
                 ?>
             </form>
         </div>
-    <?php }
+        <?php
+    }
 
     public function ploi_settings_page_init()
     {
@@ -87,7 +88,8 @@ class PloiFlushCacheSettings
     {
         $sanitary_values = [];
         if (isset($input['api_key'])) {
-            $sanitary_values['api_key'] = $input['api_key'];
+            $encrypted_api_key = (new Crypto)->encrypt($input['api_key']);
+            $sanitary_values['api_key'] = $encrypted_api_key;
         }
 
         if (isset($input['server_id'])) {
@@ -108,9 +110,15 @@ class PloiFlushCacheSettings
 
     public function api_key_callback()
     {
+        $decrypted_api_key = '';
+
+        if (isset($this->ploi_settings_options['api_key'])) {
+            $decrypted_api_key = (new Crypto)->decrypt($this->ploi_settings_options['api_key']);
+        }
+
         printf(
             '<input class="regular-text" type="text" name="ploi_settings[api_key]" id="api_key" value="%s">',
-            isset($this->ploi_settings_options['api_key']) ? esc_attr($this->ploi_settings_options['api_key']) : ''
+            $decrypted_api_key
         );
     }
 
