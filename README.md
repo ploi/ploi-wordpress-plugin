@@ -8,7 +8,8 @@ Download the plugin from your WordPress installation, on the plugin page.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://link.com) for details on our code of conduct, and the process for submitting pull requests to us.
+PR's to improve this plugin is more than welcome. In case of any big adjustments or breaking changes you might want to discuss
+beforehand with the Ploi team to make sure your PR won't get rejected for nothing.
 
 ## Authors
 
