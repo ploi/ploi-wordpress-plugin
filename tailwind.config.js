@@ -17,4 +17,5 @@ module.exports = {
     plugins: [
         require('tailwindcss-dark-mode')()
     ],
+    important: true,
 }

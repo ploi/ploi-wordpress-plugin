@@ -5,3 +5,11 @@
 #wpcontent {
     padding-left: 0;
 }
+
+.form-table th {
+    display: none;
+}
+
+.form-table td {
+    @apply p-0;
+}
