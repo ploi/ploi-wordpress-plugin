@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Ploi Flush Cache
+Plugin Name: Ploi Wordpress Plugin
 Description: Flashes Ploi Opcache and Fast-cgi cahe
 Plugin URI: https://ploi.io
 Author: Ploi
@@ -13,6 +13,7 @@ Text Domain: ploi
 defined('ABSPATH') or exit;
 
 define('PLOI_PATH', plugin_dir_path(__FILE__));
+define('PLOI_URL', plugin_dir_url(__FILE__));
 
 require_once 'inc/plugin-settings.php';
 require_once 'inc/PloiCache.php';
