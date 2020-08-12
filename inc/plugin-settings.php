@@ -30,14 +30,10 @@ class PloiFlushCacheSettings
         $this->ploi_settings_options = get_option('ploi_settings'); ?>
 
         <div class="wrap m-0 h-screen bg-gray-100 dark:bg-gray-900 font-sans aliased">
-            <div class="lg:flex lg:items-center lg:justify-left py-2 px-8 lg:px-0">
-                <div class="flex items-center justify-between text-white w-full lg:w-1/4">
-                    <a href="https://ploi.io" title="Server Management Tool" target="_blank">
-                        <span class="font-semibold text-2xl tracking-tight">ploi</span>
-                        <span class="text-2xl tracking-tight">.io</span>
-                    </a>
-                </div>
-            </div>
+            <header class="h-16 px-4 flex items-center dark:bg-gray-900">
+                <p class="text-lg text-blue-500 dark:text-white"><span class="font-bold">ploi</span>.io</p>
+            </header>
+
             <h2>Ploi Cache Settings</h2>
             <div x-data="toggleDarkMode()">
                 <button class="p-2 rounded focus:outline-none" @click="toggle" aria-label="Toggle theme">
