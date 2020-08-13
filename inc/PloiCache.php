@@ -9,11 +9,49 @@ class PloiCache
     public function __construct()
     {
 
-
+        add_action('admin_bar_menu', [$this, 'add_toolbar_items'], 100);
         add_action('admin_post_flush_opcache', [$this, 'flushOpCache']);
         add_action('admin_post_toggle_opcache', [$this, 'toggleOpCache']);
         add_action('admin_post_flush_fastcgicache', [$this, 'flushFastCgiCache']);
         add_action('admin_post_toggle_fastcgicache', [$this, 'toggleFastCgiCache']);
+    }
+
+    public function add_toolbar_items($admin_bar)
+    {
+        $admin_bar->add_menu([
+            'id' => 'ploi-cache',
+            'title' => 'Ploi',
+            'href' => '/wp-admin/options-general.php?page=ploi-settings',
+            'meta' => ['title' => __('Ploi Cache')],
+        ]);
+        $admin_bar->add_node([
+            'parent' => 'ploi-cache',
+            'id' => 'flush-opcache',
+            'title' => 'Flush OPCache',
+            'href' => wp_nonce_url(admin_url('admin-post.php?action=flush_opcache'), 'flush_opcache'),
+            'meta' => ['title' => __('Flush OPCache')],
+        ]);
+        $admin_bar->add_node([
+            'parent' => 'ploi-cache',
+            'id' => 'toggle-opcache',
+            'title' => 'Toggle OPCache',
+            'href' => wp_nonce_url(admin_url('admin-post.php?action=toggle_opcache'), 'toggle_opcache'),
+            'meta' => ['title' => __('Toggle OPCache')],
+        ]);
+        $admin_bar->add_node([
+            'parent' => 'ploi-cache',
+            'id' => 'flush-fastcgicache',
+            'title' => 'Flush Fast-Cgi Cache',
+            'href' => wp_nonce_url(admin_url('admin-post.php?action=flush_fastcgicache'), 'flush_fastcgicache'),
+            'meta' => ['title' => __('Flush Fast-Cgi Cache')],
+        ]);
+        $admin_bar->add_node([
+            'parent' => 'ploi-cache',
+            'id' => 'toggle-fastcgicache',
+            'title' => 'Toggle Fast-Cgi Cache',
+            'href' => wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'),
+            'meta' => ['title' => __('Toggle Fast-Cgi Cache')],
+        ]);
     }
 
     private function verifyRequest()

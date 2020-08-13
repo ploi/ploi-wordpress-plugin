@@ -7,7 +7,18 @@ module.exports = {
         whitelist: ['mode-dark']
     },
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                primary: {
+                    '50': '#eff4ff',
+                    '100': '#e8eefb',
+                    '400': '#5d87e6',
+                    '500': '#1853db',
+                    '600': '#164bc5',
+                    '700': '#0e3283'
+                }
+            }
+        }
     },
     variants: {
         backgroundColor: ['dark', 'dark-hover', 'dark-group-hover', 'dark-even', 'dark-odd'],
