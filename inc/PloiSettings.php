@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') or exit;
 
-class PloiFlushCacheSettings
+class PloiSettings
 {
     private $ploi_settings_options;
     private $token = '';
@@ -89,63 +89,109 @@ class PloiFlushCacheSettings
                 </p>
             </header>
             <div class="flex-1 py-6">
-                <div class="w-full px-8 mx-auto max-w-5xl">
-                    <div class="space-y-6">
-                        <div class="rounded-lg shadow bg-white dark:bg-gray-700 dark:text-gray-300 divide-y divide-gray-200 dark:divide-gray-800">
-                            <form method="post" action="options.php">
-                                <div class="px-6 py-5">
-                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 divide-gray-50">
-                                        <div class="col-span-1">
-                                            <h2 class="text-md font-medium dark:text-white">
-                                                Ploi Settings
-                                            </h2>
-                                            <p class="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                                                Edit your Ploi Settings.
-                                            </p>
-                                        </div>
+                <?php
+                $timer_text = [
+                    'enable-opcache' => 'Enabling OPCache',
+                    'disable-opcache' => 'Disabling OPCache',
+                    'refresh-opcache' => 'Purging OPCache',
+                    'enable-fascgicache' => 'Enabling FasyCgi Cache',
+                    'disable-fascgicache' => 'Disabling FasyCgi Cache',
+                    'refresh-fascgicache' => 'Purging FasyCgi Cache',
+                ];
+                if (isset($_GET['ploi_action']) && isset($timer_text[$_GET['ploi_action']])) {
+                $action_text = $timer_text[$_GET['ploi_action']];
+                ?>
+                <div class="w-full px-8 mx-auto max-w-5xl"
+                     x-data="{active: true, timer: 0}"
+                     x-show="active"
+                     x-init="window.setInterval(() => {
+                         if(timer < 100) {timer = timer + 0.5}; if (timer == 99.5) {window.location.replace('<?php echo admin_url('/options-general.php?page=ploi-settings') ?>');}
+                         }, 15); "
+                     x-show="timer <= 100"
+                >
+                    <div class="space-y-6 px-8 py-5">
+                        <div class="relative max-w-full px-10 py-4 rounded-md bg-green-600 dark:bg-green-600 text-white text-sm font-bold px-4 py-3"
+                             role="alert">
 
-                                        <div class="col-span-1 lg:col-span-2 space-y-6">
-                                            <div class="grid gap-4">
-                                                <?php
-                                                settings_fields('ploi_settings_option_group');
-                                                do_settings_sections('ploi-settings-admin');
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <footer class="rounded-b-lg bg-gray-50 px-6 py-3 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-800">
-                                    <div class="flex space-x-2 items-center justify-start">
-                                        <?php settings_errors('ploi-settings'); ?>
-                                    </div>
-                                    <div class="flex space-x-2 items-center justify-end">
-                                        <button type="submit"
-                                                class="inline-flex items-center justify-center text-sm font-medium border rounded-md transition-all ease-in-out duration-100 focus:outline-none focus:shadow-outline border-primary-500 bg-primary-500 text-white shadow hover:bg-primary-400 hover:border-primary-400 focus:border-primary-700 focus:bg-primary-600 px-3 py-2 text-sm">
-                                            Save Settings
-                                        </button>
-                                    </div>
-                                </footer>
-                            </form>
+                            <p class="text-center text-xl">
+                                <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block check-circle w-6 h-6">
+                                    <path fill-rule="evenodd"
+                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
+                                <?php echo $action_text; ?>
+                            </p>
+                            <div class="bg-white bg-opacity-25 rounded-b-md absolute bottom-0 left-0 right-0">
+                                <div class="bg-white rounded-b-md text-xs leading-none py-1 text-center text-white"
+                                     x-bind:style="'width:'+timer+'%'"></div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
+            <?php
+            }
+            ?>
 
 
-            <script>
-                function toggleDarkMode() {
-                    return {
-                        toggle() {
-                            console.log('toggle');
-                            if (document.documentElement.classList.contains('mode-dark')) {
-                                document.documentElement.classList.remove('mode-dark');
-                                return;
-                            }
-                            document.documentElement.classList.add('mode-dark');
+            <div class="w-full px-8 mx-auto max-w-5xl">
+                <div class="space-y-6">
+                    <div class="rounded-lg shadow bg-white dark:bg-gray-700 dark:text-gray-300 divide-y divide-gray-200 dark:divide-gray-800">
+                        <form method="post" action="options.php">
+                            <div class="px-6 py-5">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 divide-gray-50">
+                                    <div class="col-span-1">
+                                        <h2 class="text-md font-medium dark:text-white">
+                                            Ploi Settings
+                                        </h2>
+                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-300">
+                                            Edit your Ploi Settings.
+                                        </p>
+                                    </div>
+
+                                    <div class="col-span-1 lg:col-span-2 space-y-6">
+                                        <div class="grid gap-4">
+                                            <?php
+                                            settings_fields('ploi_settings_option_group');
+                                            do_settings_sections('ploi-settings-admin');
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <footer class="rounded-b-lg bg-gray-50 px-6 py-3 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-800">
+                                <div class="flex space-x-2 items-center justify-start">
+                                    <?php settings_errors('ploi-settings'); ?>
+                                </div>
+                                <div class="flex space-x-2 items-center justify-end">
+                                    <button type="submit"
+                                            class="inline-flex items-center justify-center text-sm font-medium border rounded-md transition-all ease-in-out duration-100 focus:outline-none focus:shadow-outline border-primary-500 bg-primary-500 text-white shadow hover:bg-primary-400 hover:border-primary-400 focus:border-primary-700 focus:bg-primary-600 px-3 py-2 text-sm">
+                                        Save Settings
+                                    </button>
+                                </div>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            function toggleDarkMode() {
+                return {
+                    toggle() {
+                        console.log('toggle');
+                        if (document.documentElement.classList.contains('mode-dark')) {
+                            document.documentElement.classList.remove('mode-dark');
+                            return;
                         }
+                        document.documentElement.classList.add('mode-dark');
                     }
                 }
-            </script>
+            }
+        </script>
         </div>
         <?php
     }
@@ -170,7 +216,7 @@ class PloiFlushCacheSettings
             '', // title
             [$this, 'api_key_callback'], // callback
             'ploi-settings-admin', // page
-            'ploi_settings_setting_section', // section
+            'ploi_settings_setting_section' // section
         );
 
         add_settings_field(
@@ -292,7 +338,7 @@ class PloiFlushCacheSettings
                 const siteSelect = this.$refs.siteSelect;
                 siteSelect.focus();
             }
-            }">
+            }" x-show="<?php echo !empty($this->token) ? 'true' : 'false'; ?>">
             <div class="p-3" x-cloak>
                 <label class="block text-sm font-medium">
                     Server
@@ -343,7 +389,8 @@ class PloiFlushCacheSettings
                     foreach ($this->sites as $server => $server_sites) {
                         $server = explode('|', $server);
                         ?>
-                        <optgroup label="<?php echo $server[1] ?>" x-show="serverId == '<?php echo $server[0]; ?>'">
+                        <optgroup label="<?php echo $server[1] ?>"
+                                  x-bind:disabled="serverId != '<?php echo $server[0]; ?>'">
                             <?php
                             foreach ($server_sites as $site) {
                                 $selected = '';
@@ -352,7 +399,8 @@ class PloiFlushCacheSettings
                                     $this->site_domain = $site->domain;
                                 }
                                 ?>
-                                <option value="<?php echo $site->id; ?>" <?php echo $selected; ?>>
+                                <option value="<?php echo $site->id; ?>" <?php echo $selected; ?>
+                                        x-show="serverId == '<?php echo $server[0]; ?>'">
                                     <?php echo $site->domain; ?>
                                 </option>
                                 <?php
@@ -395,7 +443,7 @@ class PloiFlushCacheSettings
 
 
 if (is_admin()) {
-    $ploi_settings = new PloiFlushCacheSettings();
+    $ploi_settings = new PloiSettings();
 }
 
 /*

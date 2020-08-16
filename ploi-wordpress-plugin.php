@@ -17,6 +17,6 @@ define('PLOI_URL', plugin_dir_url(__FILE__));
 
 require_once 'inc/Crypto.php';
 require_once 'inc/Ploi.php';
-require_once 'inc/plugin-settings.php';
-require_once 'inc/PloiCache.php';
+require_once 'inc/PloiSettings.php';
+require_once 'inc/PloiAdminMenu.php';
 

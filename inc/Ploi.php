@@ -1,9 +1,4 @@
 <?php
-//require PLOI_PATH . 'vendor/autoload.php';
-
-//use GuzzleHttp\Pool;
-//use GuzzleHttp\Client;
-//use GuzzleHttp\Psr7\Request;
 
 class Ploi
 {
@@ -14,7 +9,7 @@ class Ploi
     private $site_id = false;
     private $servers = [];
     private $sites = [];
-    
+
 
     public function __construct()
     {
@@ -96,14 +91,21 @@ class Ploi
         while ($current_page <= $last_page) {
             $args['page'] = $current_page;
             $response = $this->request('servers', 'GET', $args);
-            if ($response->status == '200') {
+            if ($response->status == '200' && isset($response->response->data)) {
                 $this->servers = array_merge($this->servers, $response->response->data);
             }
-            $last_page = $response->response->meta->last_page;
+            if (isset($response->response->meta->last_page)) {
+                $last_page = $response->response->meta->last_page;
+            }
             $current_page++;
         }
-
-
+        if (function_exists('getenv')) {
+            if (getenv('WP_ENV') == 'development') {
+                if (getenv('DUMMY_SERVER', false)) {
+                    $this->servers[] = json_decode(getenv('DUMMY_SERVER'));
+                }
+            }
+        }
         return $this->servers;
     }
 
@@ -121,16 +123,68 @@ class Ploi
         while ($current_page <= $last_page) {
             $args['page'] = $current_page;
             $response = $this->request('servers/' . $server_id . '/sites', 'GET', $args);
-            if ($response->status == '200') {
+            if ($response->status == '200' && isset($response->response->data)) {
                 $this->sites = array_merge($this->sites, $response->response->data);
             }
-            $last_page = $response->response->meta->last_page;
+
+            if (isset($response->response->meta->last_page)) {
+                $last_page = $response->response->meta->last_page;
+            }
+
+
             $current_page++;
         }
 
+        if (function_exists('getenv')) {
+            if (getenv('WP_ENV') == 'development') {
+                if (getenv('DUMMY_SITES', false) && $server_id == getenv('DUMMY_SERVER_ID')) {
+                    $this->sites = json_decode(getenv('DUMMY_SITES'));
+                }
+            }
+        }
 
         return $this->sites;
     }
 
+    public function getOpcacheStatus()
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        $response = $this->request('servers/' . $this->server_id, 'GET');
+
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->opcache ? 'enabled' : 'disabled';
+        }
+    }
+
+    public function toggleOpcache($action)
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        if ($action == 'enable-opcache') {
+            $method = 'POST';
+        }
+        if ($action == 'disable-opcache') {
+            $method = 'DELETE';
+        }
+        $response = $this->request('servers/' . $this->server_id . '/' . $action, $method);
+
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->opcache ? 'enabled' : 'disabled';
+        }
+    }
+
+    public function refreshOpcache()
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        $response = $this->request('servers/' . $this->server_id . '/refresh-opcache', 'POST');
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->opcache ? 'enabled' : 'disabled';
+        }
+    }
 
 }
