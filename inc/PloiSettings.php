@@ -94,9 +94,9 @@ class PloiSettings
                     'enable-opcache' => 'Enabling OPCache',
                     'disable-opcache' => 'Disabling OPCache',
                     'refresh-opcache' => 'Purging OPCache',
-                    'enable-fascgicache' => 'Enabling FasyCgi Cache',
-                    'disable-fascgicache' => 'Disabling FasyCgi Cache',
-                    'refresh-fascgicache' => 'Purging FasyCgi Cache',
+                    'enable-fastcgi' => 'Enabling FastCgi Cache',
+                    'disable-fastcgi' => 'Disabling FastCgi Cache',
+                    'refresh-fastcgi' => 'Flushing FastCgi Cache',
                 ];
                 if (isset($_GET['ploi_action']) && isset($timer_text[$_GET['ploi_action']])) {
                 $action_text = $timer_text[$_GET['ploi_action']];

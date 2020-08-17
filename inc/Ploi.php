@@ -187,4 +187,56 @@ class Ploi
         }
     }
 
+    public function getFastcg1Status()
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        if (!$this->site_id) {
+            return 'No Site Id';
+        }
+        $response = $this->request('servers/' . $this->server_id . '/sites/' . $this->site_id, 'GET');
+
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->fastcgi_cache ? 'enabled' : 'disabled';
+        }
+    }
+
+    public function toggleFastcgi($action)
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        if (!$this->site_id) {
+            return 'No Site Id';
+        }
+        if ($action == 'enable-fastcgi') {
+            $method = 'POST';
+        }
+        if ($action == 'disable-fastcgi') {
+            $method = 'DELETE';
+        }
+        $action = str_replace('-fastcgi', '', $action);
+        $response = $this->request('servers/' . $this->server_id . '/sites/' . $this->site_id . '/fastcgi-cache/' . $action, $method);
+
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->fastcgi_cache ? 'enabled' : 'disabled';
+        }
+    }
+
+    public function refreshFastcgi()
+    {
+        if (!$this->server_id) {
+            return 'No Server Id';
+        }
+        if (!$this->site_id) {
+            return 'No Site Id';
+        }
+
+        $response = $this->request('servers/' . $this->server_id . '/sites/' . $this->site_id . '/fastcgi-cache/flush', 'POST');
+        if ($response->status == '200' && isset($response->response->data)) {
+            return $response->response->data->fastcgi_cache ? 'enabled' : 'disabled';
+        }
+    }
+
 }
