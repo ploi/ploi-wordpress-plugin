@@ -11,7 +11,7 @@ class Ploi
     private $sites = [];
 
 
-    public function __construct()
+    public function __construct($api_key = false)
     {
         if (!current_user_can('administrator')) {
             return;
@@ -19,7 +19,8 @@ class Ploi
         $this->baseUrl = 'https://ploi.io/api/';
         $ploi_settings_options = get_option('ploi_settings');
 
-        if (isset($ploi_settings_options['api_key']) && !empty($ploi_settings_options['api_key'])) {
+        $this->token = $api_key;
+        if (!$api_key && isset($ploi_settings_options['api_key']) && !empty($ploi_settings_options['api_key'])) {
             $this->token = (new Crypto)->decrypt($ploi_settings_options['api_key']);
         }
         if (!$this->token) {
@@ -73,7 +74,9 @@ class Ploi
             'response' => json_decode($response),
         ];
         curl_close($ch);
-
+//        echo $this->token;
+//        echo print_r($response, true);
+//        error_log(print_r($response, true));
         return $response;
     }
 

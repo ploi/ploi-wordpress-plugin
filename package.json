@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/ploi-deploy/ploi-wordpress-plugin#readme",
   "devDependencies": {
-    "tailwindcss": "^1.6.2",
+    "tailwindcss": "^1.7.3",
     "tailwindcss-dark-mode": "^1.1.6",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "dependencies": {
-    "alpinejs": "^2.5.0",
+    "alpinejs": "^2.6.0",
     "cross-env": "^7.0.2",
-    "laravel-mix": "^5.0.4"
+    "laravel-mix": "^5.0.5"
   }
 }

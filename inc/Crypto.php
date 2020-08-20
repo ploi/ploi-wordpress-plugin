@@ -18,6 +18,7 @@ class Crypto
         if (defined('LOGGED_IN_KEY') && '' !== LOGGED_IN_KEY) {
             return LOGGED_IN_KEY;
         }
+        die();
         return 'Wordpress Unique Keys have not been set';
     }
 
@@ -26,6 +27,7 @@ class Crypto
         if (defined('LOGGED_IN_SALT') && '' !== LOGGED_IN_SALT) {
             return LOGGED_IN_SALT;
         }
+        die();
         return 'Wordpress Unique Keys have not been set';
     }
 

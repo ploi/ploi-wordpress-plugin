@@ -17,8 +17,63 @@ class PloiSettings
         add_action('admin_menu', [$this, 'ploi_settings_add_plugin_page']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts_styles']);
         add_action('admin_init', [$this, 'ploi_settings_page_init']);
+        add_action('init', [$this, 'ploi_plugin_init']);
 
 
+    }
+
+    public function ploi_plugin_init()
+    {
+        add_filter('pre_update_option_ploi_settings', [$this, 'encrypt_api_key_on_save'], 10, 2);
+    }
+
+    public function encrypt_api_key_on_save($new_value)
+    {
+        error_log('old_value-->' . print_r($old_value, true));
+        error_log('new_value-->' . print_r($new_value, true));
+
+        if (isset($new_value['api_key'])) {
+            $new_value['api_key'] = (new Crypto)->encrypt(sanitize_text_field($new_value['api_key']));
+        }
+
+
+        if (!isset($new_value['server_id'])) {
+            $server_ip = $_SERVER['REMOTE_ADDR'];
+
+//                Used for local dev
+            if (function_exists('getenv')) {
+                if (getenv('WP_ENV') == 'development') {
+                    if (getenv('DEV_SERVER', false)) {
+                        $server_ip = getenv('DEV_SERVER');
+                    }
+                }
+            }
+
+            $server = (new Ploi($new_value['api_key']))->servers($server_ip);
+            $new_value['server_id'] = $server[0]->id;
+        }
+
+
+        if (!isset($new_value['site_id'])) {
+
+            if (isset($new_value['server_id']) && !empty($new_value['server_id'])) {
+                $domain = str_ireplace('www.', '', parse_url(site_url(), PHP_URL_HOST));
+
+                //                Used for local dev
+                if (function_exists('getenv')) {
+                    if (getenv('WP_ENV') == 'development') {
+                        if (getenv('DEV_SITE', false)) {
+                            $domain = getenv('DEV_SITE');
+                        }
+                    }
+                }
+
+                $sites = (new Ploi($new_value['api_key']))->sites($new_value['server_id'], $domain);
+                $new_value['site_id'] = $sites[0]->id;
+            }
+        }
+
+        return $new_value;
     }
 
     private function getSites()
@@ -62,7 +117,6 @@ class PloiSettings
             $this->servers = (new Ploi())->servers();
             $this->getSites();
         }
-
 
         ?>
 
@@ -152,10 +206,32 @@ class PloiSettings
 
                                     <div class="col-span-1 lg:col-span-2 space-y-6">
                                         <div class="grid gap-4">
-                                            <?php
-                                            settings_fields('ploi_settings_option_group');
-                                            do_settings_sections('ploi-settings-admin');
-                                            ?>
+                                            <div x-data="{
+                                                isEditingToken: <?php echo !empty($this->token) ? 'false' : 'true'; ?>,
+                                                tokenFocus: function() {
+                                                    const tokenInput = this.$refs.tokenInput;
+                                                    tokenInput.focus();
+                                                    tokenInput.select();
+                                                },
+                                                serverId: '<?php echo !empty($this->server_id) ? $this->server_id : 'false'; ?>',
+                                                siteId: '<?php echo !empty($this->site_id) ? $this->site_id : 'false'; ?>',
+                                                isEditingServer: <?php echo !empty($this->server_id) ? 'false' : 'true'; ?>,
+                                                serverFocus: function() {
+                                                    const serverSelect = this.$refs.serverSelect;
+                                                    serverSelect.focus();
+                                                },
+                                                isEditingSite: <?php echo !empty($this->site_id) ? 'false' : 'true'; ?>,
+                                                siteFocus: function() {
+                                                    const siteSelect = this.$refs.siteSelect;
+                                                    siteSelect.focus();
+                                                },
+                                                showIdFeilds: <?php echo !empty($this->token) ? 'true' : 'false'; ?>
+                                                }">
+                                                <?php
+                                                settings_fields('ploi_settings_option_group');
+                                                do_settings_sections('ploi-settings-admin');
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -200,8 +276,8 @@ class PloiSettings
     {
         register_setting(
             'ploi_settings_option_group', // option_group
-            'ploi_settings', // option_name
-            [$this, 'ploi_settings_sanitize'] // sanitize_callback
+            'ploi_settings' // option_name
+//            [$this, 'ploi_settings_sanitize'] // sanitize_callback
         );
 
         add_settings_section(
@@ -220,68 +296,77 @@ class PloiSettings
         );
 
         add_settings_field(
-            'server_site_id', // id
+            'server_id', // id
             '', // title
-            [$this, 'server_site_id_callback'], // callback
+            [$this, 'server_id_callback'], // callback
             'ploi-settings-admin', // page
             'ploi_settings_setting_section' // section
         );
 
-//        add_settings_field(
-//            'site_id', // id
-//            '', // title
-//            [$this, 'site_id_callback'], // callback
-//            'ploi-settings-admin', // page
-//            'ploi_settings_setting_section' // section
-//        );
+        add_settings_field(
+            'site_id', // id
+            '', // title
+            [$this, 'site_id_callback'], // callback
+            'ploi-settings-admin', // page
+            'ploi_settings_setting_section' // section
+        );
     }
 
     public function ploi_settings_sanitize($input)
     {
+//        echo print_r($input, true);
+        error_log(print_r($input, true));
         $sanitary_values = [];
         if (isset($input['api_key'])) {
-            $encrypted_api_key = (new Crypto)->encrypt($input['api_key']);
+            $encrypted_api_key = (new Crypto)->encrypt(sanitize_text_field($input['api_key']));
             $sanitary_values['api_key'] = $encrypted_api_key;
         }
-
         if (isset($input['server_id'])) {
-            $sanitary_values['server_id'] = $input['server_id'];
-            if (empty($input['server_id'])) {
-                $server_ip = $_SERVER['REMOTE_ADDR'];
-
-//                Used for local dev
-                if (function_exists('getenv')) {
-                    if (getenv('WP_ENV') == 'development') {
-                        if (getenv('DEV_SERVER', false)) {
-                            $server_ip = getenv('DEV_SERVER');
-                        }
-                    }
-                }
-
-                $server = (new Ploi())->servers($server_ip);
-                $sanitary_values['server_id'] = $server[0]->id;
-            }
+            $sanitary_values['server_id'] = sanitize_text_field($input['server_id']);
         }
-
 
         if (isset($input['site_id'])) {
             $sanitary_values['site_id'] = sanitize_text_field($input['site_id']);
-            if (empty($input['site_id']) && isset($sanitary_values['server_id']) && !empty($sanitary_values['server_id'])) {
-                $domain = str_ireplace('www.', '', parse_url(site_url(), PHP_URL_HOST));
-
-                //                Used for local dev
-                if (function_exists('getenv')) {
-                    if (getenv('WP_ENV') == 'development') {
-                        if (getenv('DEV_SITE', false)) {
-                            $domain = getenv('DEV_SITE');
-                        }
-                    }
-                }
-
-                $sites = (new Ploi())->sites($sanitary_values['server_id'], $domain);
-                $sanitary_values['site_id'] = $sites[0]->id;
-            }
         }
+
+//        if (isset($input['server_id'])) {
+//            $sanitary_values['server_id'] = $input['server_id'];
+//            if (empty($input['server_id'])) {
+//                $server_ip = $_SERVER['REMOTE_ADDR'];
+//
+////                Used for local dev
+//                if (function_exists('getenv')) {
+//                    if (getenv('WP_ENV') == 'development') {
+//                        if (getenv('DEV_SERVER', false)) {
+//                            $server_ip = getenv('DEV_SERVER');
+//                        }
+//                    }
+//                }
+//
+//                $server = (new Ploi($input['api_key']))->servers($server_ip);
+//                $sanitary_values['server_id'] = $server[0]->id;
+//            }
+//        }
+//
+//
+//        if (isset($input['site_id'])) {
+//            $sanitary_values['site_id'] = sanitize_text_field($input['site_id']);
+//            if (empty($input['site_id']) && isset($sanitary_values['server_id']) && !empty($sanitary_values['server_id'])) {
+//                $domain = str_ireplace('www.', '', parse_url(site_url(), PHP_URL_HOST));
+//
+//                //                Used for local dev
+//                if (function_exists('getenv')) {
+//                    if (getenv('WP_ENV') == 'development') {
+//                        if (getenv('DEV_SITE', false)) {
+//                            $domain = getenv('DEV_SITE');
+//                        }
+//                    }
+//                }
+//
+//                $sites = (new Ploi($input['api_key']))->sites($sanitary_values['server_id'], $domain);
+//                $sanitary_values['site_id'] = $sites[0]->id;
+//            }
+//        }
 
 
         return $sanitary_values;
@@ -295,74 +380,51 @@ class PloiSettings
     public function api_key_callback()
     {
         ?>
-
-        <div class="p-3" x-data="{
-            isEditing: <?php echo !empty($this->token) ? 'false' : 'true'; ?>,
-            focus: function() {
-                const textInput = this.$refs.textInput;
-                textInput.focus();
-                textInput.select();
-            }
-        }" x-cloak>
+        <div class="p-3" x-cloak>
             <label class="block text-sm font-medium">Ploi API Key</label>
-            <div class="text-sm font-medium" x-show="!isEditing">
-                <span @click="isEditing = true; $nextTick(() => focus())">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+            <div class="text-sm font-medium" x-show="!isEditingToken">
+                <span @click="isEditingToken = true; $nextTick(() => tokenFocus())">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
             </div>
 
-            <input x-show="isEditing"
+            <input x-show="isEditingToken"
                    type="text"
                    placeholder=""
-                   x-ref="textInput"
+                   x-ref="tokenInput"
                    class="p-1 form-input w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
                    name="ploi_settings[api_key]"
                    value="<?php echo $this->token; ?>">
 
         </div>
-
         <?php
     }
 
-    public function server_site_id_callback()
+    public function server_id_callback()
     {
         ?>
-        <div x-data="{
-            serverId: '<?php echo !empty($this->server_id) ? $this->server_id : 'false'; ?>',
-            siteId: '<?php echo !empty($this->site_id) ? $this->site_id : 'false'; ?>',
-            isEditingServer: <?php echo !empty($this->server_id) ? 'false' : 'true'; ?>,
-            serverFocus: function() {
-                const serverSelect = this.$refs.serverSelect;
-                serverSelect.focus();
-            },
-            isEditingSite: <?php echo !empty($this->site_id) ? 'false' : 'true'; ?>,
-            siteFocus: function() {
-                const siteSelect = this.$refs.siteSelect;
-                siteSelect.focus();
-            }
-            }" x-show="<?php echo !empty($this->token) ? 'true' : 'false'; ?>">
-            <div class="p-3" x-cloak>
-                <label class="block text-sm font-medium">
-                    Server
-                </label>
+        <div class="p-3" x-show="showIdFeilds" x-cloak>
+            <label class="block text-sm font-medium">
+                Server
+            </label>
 
-                <select x-show="isEditingServer"
-                        x-ref="serverSelect"
-                        x-model="serverId"
-                        class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
-                        name="ploi_settings[server_id]" id="server_id">
-                    <?php foreach ($this->servers as $server) {
-                        $selected = '';
-                        if ($server->id == $this->server_id) {
-                            $selected = 'selected';
-                            $this->server_name = $server->name;
-                        }
-                        ?>
-                        <option value="<?php echo $server->id; ?>" <?php echo $selected; ?>>
-                            <?php echo $server->name; ?>
-                        </option>
-                        <?php
-                    } ?>
-                </select>
-                <div class="text-sm font-medium uppercase" x-show="!isEditingServer">
+            <select x-show="isEditingServer"
+                    x-ref="serverSelect"
+                    x-model="serverId"
+                    class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
+                    name="ploi_settings[server_id]" id="server_id">
+                <?php foreach ($this->servers as $server) {
+                    $selected = '';
+                    if ($server->id == $this->server_id) {
+                        $selected = 'selected';
+                        $this->server_name = $server->name;
+                    }
+                    ?>
+                    <option value="<?php echo $server->id; ?>" <?php echo $selected; ?>>
+                        <?php echo $server->name; ?>
+                    </option>
+                    <?php
+                } ?>
+            </select>
+            <div class="text-sm font-medium uppercase" x-show="!isEditingServer">
                     <span @click="isEditingServer = true; $nextTick(() => serverFocus())"
                           class="inline-block bg-primary-500 mt-1 px-3 py-1">
     <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
@@ -372,46 +434,52 @@ class PloiSettings
                         <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1"><path
                                     d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
                     </span>
-                </div>
             </div>
+        </div>
+        <?php
 
-            <div class="p-3" x-cloak>
-                <label class="block text-sm font-medium">
-                    Site
-                </label>
+    }
 
-                <select x-show="isEditingSite"
-                        x-ref="siteSelect"
-                        x-model="siteId"
-                        class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
-                        name="ploi_settings[site_id]" id="site_id">
-                    <?php
-                    foreach ($this->sites as $server => $server_sites) {
-                        $server = explode('|', $server);
-                        ?>
-                        <optgroup label="<?php echo $server[1] ?>"
-                                  x-bind:disabled="serverId != '<?php echo $server[0]; ?>'">
-                            <?php
-                            foreach ($server_sites as $site) {
-                                $selected = '';
-                                if ($site->id == $this->site_id) {
-                                    $selected = 'selected';
-                                    $this->site_domain = $site->domain;
-                                }
-                                ?>
-                                <option value="<?php echo $site->id; ?>" <?php echo $selected; ?>
-                                        x-show="serverId == '<?php echo $server[0]; ?>'">
-                                    <?php echo $site->domain; ?>
-                                </option>
-                                <?php
+    public function site_id_callback()
+    {
+        ?>
+        <div class="p-3" x-show="showIdFeilds" x-cloak>
+            <label class="block text-sm font-medium">
+                Site
+            </label>
+
+            <select x-show="isEditingSite"
+                    x-ref="siteSelect"
+                    x-model="siteId"
+                    class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
+                    name="ploi_settings[site_id]" id="site_id">
+                <?php
+                foreach ($this->sites as $server => $server_sites) {
+                    $server = explode('|', $server);
+                    ?>
+                    <optgroup label="<?php echo $server[1] ?>"
+                              x-bind:disabled="serverId != '<?php echo $server[0]; ?>'">
+                        <?php
+                        foreach ($server_sites as $site) {
+                            $selected = '';
+                            if ($site->id == $this->site_id) {
+                                $selected = 'selected';
+                                $this->site_domain = $site->domain;
                             }
                             ?>
-                        </optgroup>
-                        <?php
-                    }
-                    ?>
-                </select>
-                <div class="text-sm font-medium uppercase" x-show="!isEditingSite">
+                            <option value="<?php echo $site->id; ?>" <?php echo $selected; ?>
+                                    x-show="serverId == '<?php echo $server[0]; ?>'">
+                                <?php echo $site->domain; ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </optgroup>
+                    <?php
+                }
+                ?>
+            </select>
+            <div class="text-sm font-medium uppercase" x-show="!isEditingSite">
                     <span @click="isEditingSite = true; $nextTick(() => siteFocus())"
                           class="inline-block bg-primary-500 mt-1 px-3 py-1">
     <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
@@ -421,7 +489,6 @@ class PloiSettings
                         <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1"><path
                                     d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
                     </span>
-                </div>
             </div>
         </div>
 
@@ -453,3 +520,4 @@ if (is_admin()) {
  * $sms_secret_key_1 = $ploi_settings_options['sms_secret_key_1']; // Size Attribute
  * $sms_text_2 = $ploi_settings_options['sms_text_2']; // Availability Text
  */
+
