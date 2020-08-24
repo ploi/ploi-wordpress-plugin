@@ -194,10 +194,10 @@ class PloiSettings
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 divide-gray-50">
                                     <div class="col-span-1">
                                         <h2 class="text-md font-medium dark:text-white">
-                                            Ploi Settings
+                                            <?php echo __('Ploi Settings', 'ploi'); ?>
                                         </h2>
                                         <p class="mt-2 text-sm text-gray-500 dark:text-gray-300">
-                                            Edit your Ploi Settings.
+                                            <?php echo __('Edit your Ploi Settings', 'ploi'); ?>.
                                         </p>
                                     </div>
 
@@ -241,7 +241,7 @@ class PloiSettings
                                 <div class="flex space-x-2 items-center justify-end">
                                     <button type="submit"
                                             class="inline-flex items-center justify-center text-sm font-medium border rounded-md transition-all ease-in-out duration-100 focus:outline-none focus:shadow-outline border-primary-500 bg-primary-500 text-white shadow hover:bg-primary-400 hover:border-primary-400 focus:border-primary-700 focus:bg-primary-600 px-3 py-2 text-sm">
-                                        Save Settings
+                                        <?php echo __('Save Settings', 'ploi'); ?>
                                     </button>
                                 </div>
                             </footer>
@@ -256,7 +256,7 @@ class PloiSettings
                                         <div class="w-2 h-16 rounded-md <?php echo $opcache_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
                                         <div class="ml-4 w-full">
                                             <p class="text-base mb-1 text-center">
-                                                <span class="text-xl font-medium">OPCache</span>
+                                                <span class="text-xl font-medium"><?php echo __('OPCache', 'ploi'); ?></span>
                                                 <!--                                                <span>· -->
                                                 <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
                                                 ?>
@@ -294,7 +294,7 @@ class PloiSettings
                                                     ?>
                                                     "
                                                        href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_opcache'), 'toggle_opcache'); ?>">
-                                                        <?php echo $opcache_status === 'enabled' ? 'Disable OPCache' : 'Enable OPCache'; ?>
+                                                        <?php echo $opcache_status === 'enabled' ? __('Disable OPCache', 'ploi') : __('Enable OPCache', 'ploi'); ?>
                                                     </a>
                                                 </div>
                                                 <?php if ($opcache_status === 'enabled') {
@@ -324,7 +324,7 @@ class PloiSettings
                                                         px-3 py-2
                                                         w-full
                                                         ">
-                                                            Flush OPCache
+                                                            <?php echo __('Flush OPCache', 'ploi'); ?>
                                                         </a>
                                                     </div>
                                                     <?php
@@ -341,7 +341,7 @@ class PloiSettings
                                         <div class="w-2 h-16 rounded-md <?php echo $fastcgi_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
                                         <div class="ml-4 w-full">
                                             <p class="text-base mb-1 text-center">
-                                                <span class="text-xl font-medium">FastCgi Cache</span>
+                                                <span class="text-xl font-medium"><?php echo __('FastCgi Cache', 'ploi'); ?></span>
                                                 <!--                                                <span>· -->
                                                 <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
                                                 ?>
@@ -379,7 +379,7 @@ class PloiSettings
                                                     ?>
                                                     "
                                                        href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'); ?>">
-                                                        <?php echo $fastcgi_status === 'enabled' ? 'Disable FastCgi' : 'Enable FastCgi'; ?>
+                                                        <?php echo $fastcgi_status === 'enabled' ? __('Disable FastCgi', 'ploi') : __('Enable FastCgi', 'ploi'); ?>
                                                     </a>
                                                 </div>
                                                 <?php if ($fastcgi_status === 'enabled') {
@@ -410,7 +410,7 @@ class PloiSettings
                                                         w-full
                                                         w-full
                                                         ">
-                                                            Flush FastCgi
+                                                            <?php echo __('Flush FastCgi', 'ploi'); ?>
                                                         </a>
                                                     </div>
                                                     <?php
@@ -497,7 +497,7 @@ class PloiSettings
     {
         ?>
         <div class="p-3 pt-0" x-cloak>
-            <label class="block text-sm font-medium mb-2">Ploi API Key</label>
+            <label class="block text-sm font-medium mb-2"><?php echo __('Ploi API Key', 'ploi'); ?></label>
             <div class="text-sm font-medium" x-show="!isEditingToken">
                 <span @click="isEditingToken = true; $nextTick(() => tokenFocus())"
                       class="inline-flex
@@ -543,7 +543,7 @@ class PloiSettings
         ?>
         <div class="p-3 pt-0" x-show="showIdFeilds" x-cloak>
             <label class="block text-sm font-medium mb-2">
-                Server
+                <?php echo __('Server', 'ploi'); ?>
             </label>
 
             <select x-show="isEditingServer" x-ref="serverSelect" x-model="serverId"
@@ -606,7 +606,7 @@ class PloiSettings
         ?>
         <div class="p-3 pt-0" x-show="showIdFeilds" x-cloak>
             <label class="block text-sm font-medium mb-2">
-                Site
+                <?php echo __('Site', 'ploi'); ?>
             </label>
 
             <select x-show="isEditingSite" x-ref="siteSelect" x-model="siteId"

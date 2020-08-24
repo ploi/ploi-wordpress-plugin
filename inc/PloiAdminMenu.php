@@ -28,7 +28,7 @@ class PloiAdminMenu
             'id' => 'ploi-cache',
             'title' => 'Ploi',
             'href' => admin_url('options-general.php?page=ploi-settings'),
-            'meta' => ['title' => __('Ploi Cache')],
+            'meta' => ['title' => __('Ploi Cache', 'ploi')],
         ]);
         if ($this->opcache_status == 'enabled') {
             $admin_bar->add_node([
@@ -36,7 +36,7 @@ class PloiAdminMenu
                 'id' => 'flush-opcache',
                 'title' => 'Flush OPCache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=flush_opcache'), 'flush_opcache'),
-                'meta' => ['title' => __('Flush OPCache')],
+                'meta' => ['title' => __('Flush OPCache', 'ploi')],
             ]);
         }
         if ($this->opcache_status != 'No Server Id') {
@@ -45,7 +45,7 @@ class PloiAdminMenu
                 'id' => 'toggle-opcache',
                 'title' => $this->opcache_status == 'enabled' ? 'Disable OPCache' : 'Enable OPCache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=toggle_opcache'), 'toggle_opcache'),
-                'meta' => ['title' => __($this->opcache_status == 'enabled' ? 'Disable OPCache' : 'Enable OPCache')],
+                'meta' => ['title' => $this->opcache_status == 'enabled' ? __('Disable OPCache', 'ploi') : __('Enable OPCache', 'ploi')],
             ]);
         }
 
@@ -55,7 +55,7 @@ class PloiAdminMenu
                 'id' => 'flush-fastcgicache',
                 'title' => 'Flush Fast-Cgi Cache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=flush_fastcgicache'), 'flush_fastcgicache'),
-                'meta' => ['title' => __('Flush Fast-Cgi Cache')],
+                'meta' => ['title' => __('Flush Fast-Cgi Cache', 'ploi')],
             ]);
         }
         if ($this->fastcgi_status != 'No Server Id' && $this->fastcgi_status != 'No Site Id') {
@@ -64,7 +64,7 @@ class PloiAdminMenu
                 'id' => 'toggle-fastcgicache',
                 'title' => $this->fastcgi_status == 'enabled' ? 'Disable Fast-Cgi Cache' : 'Enable Fast-Cgi Cache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'),
-                'meta' => ['title' => __('Toggle Fast-Cgi Cache')],
+                'meta' => ['title' => __('Toggle Fast-Cgi Cache', 'ploi')],
             ]);
         }
         $admin_bar->add_node([
@@ -72,7 +72,7 @@ class PloiAdminMenu
             'id' => 'ploi-settings',
             'title' => 'Ploi Settings',
             'href' => admin_url('options-general.php?page=ploi-settings'),
-            'meta' => ['title' => __('Ploi Settings')],
+            'meta' => ['title' => __('Ploi Settings', 'ploi')],
         ]);
     }
 

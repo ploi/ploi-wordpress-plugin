@@ -1,0 +1,108 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Ploi Wordpress Plugin\n"
+"POT-Creation-Date: 2020-08-24 12:03+0300\n"
+"PO-Revision-Date: 2020-08-24 12:03+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ploi-wordpress-plugin.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: node_modules\n"
+
+#: inc/PloiAdminMenu.php:31
+msgid "Ploi Cache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:39 inc/PloiSettings.php:327
+msgid "Flush OPCache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:48 inc/PloiSettings.php:297
+msgid "Disable OPCache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:48 inc/PloiSettings.php:297
+msgid "Enable OPCache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:58
+msgid "Flush Fast-Cgi Cache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:67
+msgid "Toggle Fast-Cgi Cache"
+msgstr ""
+
+#: inc/PloiAdminMenu.php:75 inc/PloiSettings.php:197
+msgid "Ploi Settings"
+msgstr ""
+
+#: inc/PloiSettings.php:200
+msgid "Edit your Ploi Settings"
+msgstr ""
+
+#: inc/PloiSettings.php:244
+msgid "Save Settings"
+msgstr ""
+
+#: inc/PloiSettings.php:259
+msgid "OPCache"
+msgstr ""
+
+#: inc/PloiSettings.php:344
+msgid "FastCgi Cache"
+msgstr ""
+
+#: inc/PloiSettings.php:382
+msgid "Disable FastCgi"
+msgstr ""
+
+#: inc/PloiSettings.php:382
+msgid "Enable FastCgi"
+msgstr ""
+
+#: inc/PloiSettings.php:413
+msgid "Flush FastCgi"
+msgstr ""
+
+#: inc/PloiSettings.php:500
+msgid "Ploi API Key"
+msgstr ""
+
+#: inc/PloiSettings.php:546
+msgid "Server"
+msgstr ""
+
+#: inc/PloiSettings.php:609
+msgid "Site"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Ploi Wordpress Plugin"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://ploi.io"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Flashes Ploi Opcache and Fast-cgi cahe"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Ploi"
+msgstr ""

@@ -20,3 +20,11 @@ require_once 'inc/Ploi.php';
 require_once 'inc/PloiSettings.php';
 require_once 'inc/PloiAdminMenu.php';
 
+
+function ploi_load_plugin_textdomain()
+{
+    load_plugin_textdomain('ploi', FALSE, basename(dirname(__FILE__)) . '/languages/');
+}
+
+add_action('plugins_loaded', 'ploi_load_plugin_textdomain');
+
