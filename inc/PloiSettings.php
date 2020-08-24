@@ -234,7 +234,7 @@ class PloiSettings
                                     </div>
                                 </div>
                             </div>
-                            <footer class="rounded-b-lg bg-gray-50 px-6 py-3 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-800">
+                            <footer class="rounded-b-lg bg-gray-200 px-6 py-3 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-800">
                                 <div class="flex space-x-2 items-center justify-start">
                                     <?php settings_errors('ploi-settings'); ?>
                                 </div>
@@ -496,10 +496,38 @@ class PloiSettings
     public function api_key_callback()
     {
         ?>
-        <div class="p-3" x-cloak>
-            <label class="block text-sm font-medium">Ploi API Key</label>
+        <div class="p-3 pt-0" x-cloak>
+            <label class="block text-sm font-medium mb-2">Ploi API Key</label>
             <div class="text-sm font-medium" x-show="!isEditingToken">
-                <span @click="isEditingToken = true; $nextTick(() => tokenFocus())">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+                <span @click="isEditingToken = true; $nextTick(() => tokenFocus())"
+                      class="inline-flex
+                                items-center
+                                justify-center
+                                text-xs
+                                sm:text-sm
+                                font-medium
+                                border
+                                rounded-md
+                                transition-all
+                                ease-in-out
+                                duration-100
+                                focus:outline-none
+                                focus:shadow-outline
+                                text-white
+                                shadow
+                                px-3 py-2
+                                border-success-500
+                                bg-success-500
+                                hover:bg-success-400
+                                hover:border-success-400
+                                focus:border-success-700
+                                focus:bg-success-600
+                                ">
+                    &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                </span>
             </div>
 
             <input x-show="isEditingToken" type="text" placeholder="" x-ref="tokenInput"
@@ -513,8 +541,8 @@ class PloiSettings
     public function server_id_callback()
     {
         ?>
-        <div class="p-3" x-show="showIdFeilds" x-cloak>
-            <label class="block text-sm font-medium">
+        <div class="p-3 pt-0" x-show="showIdFeilds" x-cloak>
+            <label class="block text-sm font-medium mb-2">
                 Server
             </label>
 
@@ -536,7 +564,29 @@ class PloiSettings
             </select>
             <div class="text-sm font-medium uppercase" x-show="!isEditingServer">
                 <span @click="isEditingServer = true; $nextTick(() => serverFocus())"
-                      class="inline-block bg-primary-500 mt-1 px-3 py-1">
+                      class="inline-flex
+                                items-center
+                                justify-center
+                                text-xs
+                                sm:text-sm
+                                font-medium
+                                border
+                                rounded-md
+                                transition-all
+                                ease-in-out
+                                duration-100
+                                focus:outline-none
+                                focus:shadow-outline
+                                text-white
+                                shadow
+                                px-3 py-2
+                                border-success-500
+                                bg-success-500
+                                hover:bg-success-400
+                                hover:border-success-400
+                                focus:border-success-700
+                                focus:bg-success-600
+                                ">
                     <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
                     <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
                     <!--                                                                                              clip-rule="evenodd"></path></svg>-->
@@ -554,8 +604,8 @@ class PloiSettings
     public function site_id_callback()
     {
         ?>
-        <div class="p-3" x-show="showIdFeilds" x-cloak>
-            <label class="block text-sm font-medium">
+        <div class="p-3 pt-0" x-show="showIdFeilds" x-cloak>
+            <label class="block text-sm font-medium mb-2">
                 Site
             </label>
 
@@ -590,7 +640,29 @@ class PloiSettings
             </select>
             <div class="text-sm font-medium uppercase" x-show="!isEditingSite">
                 <span @click="isEditingSite = true; $nextTick(() => siteFocus())"
-                      class="inline-block bg-primary-500 mt-1 px-3 py-1">
+                      class="inline-flex
+                                items-center
+                                justify-center
+                                text-xs
+                                sm:text-sm
+                                font-medium
+                                border
+                                rounded-md
+                                transition-all
+                                ease-in-out
+                                duration-100
+                                focus:outline-none
+                                focus:shadow-outline
+                                text-white
+                                shadow
+                                px-3 py-2
+                                border-success-500
+                                bg-success-500
+                                hover:bg-success-400
+                                hover:border-success-400
+                                focus:border-success-700
+                                focus:bg-success-600
+                                ">
                     <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
                     <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
                     <!--                                                                                              clip-rule="evenodd"></path></svg>-->
