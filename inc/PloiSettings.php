@@ -285,12 +285,11 @@ class PloiSettings
                                                     text-white
                                                     shadow
                                                     px-3 py-2
-                                                    w-full
                                                     <?php
                                                     if ($opcache_status == 'enabled') {
-                                                        echo 'border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
+                                                        echo 'w-full border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
                                                     } else {
-                                                        echo 'border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
+                                                        echo 'w-1/2 border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
                                                     }
                                                     ?>
                                                     "
@@ -323,7 +322,6 @@ class PloiSettings
                                                         focus:border-primary-700
                                                         focus:bg-primary-600
                                                         px-3 py-2
-                                                        w-full
                                                         w-full
                                                         ">
                                                             Flush OPCache
@@ -372,12 +370,11 @@ class PloiSettings
                                                     text-white
                                                     shadow
                                                     px-3 py-2
-                                                    w-full
                                                     <?php
                                                     if ($fastcgi_status == 'enabled') {
-                                                        echo 'border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
+                                                        echo 'w-full border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
                                                     } else {
-                                                        echo 'border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
+                                                        echo 'w-1/2 border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
                                                     }
                                                     ?>
                                                     "
