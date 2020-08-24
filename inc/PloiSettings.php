@@ -18,8 +18,6 @@ class PloiSettings
         add_action('admin_enqueue_scripts', [$this, 'enqueue_scripts_styles']);
         add_action('admin_init', [$this, 'ploi_settings_page_init']);
         add_action('init', [$this, 'ploi_plugin_init']);
-
-
     }
 
     public function ploi_plugin_init()
@@ -29,18 +27,21 @@ class PloiSettings
 
     public function encrypt_api_key_on_save($new_value)
     {
-        error_log('old_value-->' . print_r($old_value, true));
-        error_log('new_value-->' . print_r($new_value, true));
+
+        if (!$new_value['api_key']) {
+            $new_value['site_id'] = '';
+            $new_value['server_id'] = '';
+            return $new_value;
+        }
 
         if (isset($new_value['api_key'])) {
             $new_value['api_key'] = (new Crypto)->encrypt(sanitize_text_field($new_value['api_key']));
         }
 
-
+        $server_id = false;
         if (!isset($new_value['server_id'])) {
-            $server_ip = $_SERVER['REMOTE_ADDR'];
-
-//                Used for local dev
+            $server_ip = $_SERVER['SERVER_ADDR'];
+            //                Used for local dev
             if (function_exists('getenv')) {
                 if (getenv('WP_ENV') == 'development') {
                     if (getenv('DEV_SERVER', false)) {
@@ -118,24 +119,25 @@ class PloiSettings
             $this->getSites();
         }
 
+        $opcache_status = (new Ploi())->getOpcacheStatus();
+        $fastcgi_status = (new Ploi())->getFastcg1Status();
+
         ?>
 
-        <div class="wrap m-0 h-screen bg-gray-100 dark:bg-gray-900 font-sans aliased">
+        <div class="wrap m-0 h-screen bg-gray-100 dark:bg-gray-900 font-sans aliased absolute inset-0">
             <header class="h-16 px-4 flex items-center bg-primary-500">
                 <p class="w-full text-center text-lg text-white">
                     <span class="font-bold">ploi</span>.io
                 <div class="inline-block" x-data="toggleDarkMode()">
                     <button class="p-2 rounded focus:outline-none" @click="toggle" aria-label="Toggle theme">
                         <svg class="w-5 h-5 dark:text-white" x-show="dark" aria-label="Apply light theme" role="image"
-                             fill="currentColor"
-                             viewBox="0 0 20 20">
+                             fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                   d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
                                   clip-rule="evenodd"></path>
                         </svg>
                         <svg class="w-5 h-5" x-show="!dark" aria-label="Apply dark theme" role="image"
-                             fill="currentColor"
-                             viewBox="0 0 20 20" style="display: none;">
+                             fill="currentColor" viewBox="0 0 20 20" style="display: none;">
                             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                         </svg>
                     </button>
@@ -155,14 +157,9 @@ class PloiSettings
                 if (isset($_GET['ploi_action']) && isset($timer_text[$_GET['ploi_action']])) {
                 $action_text = $timer_text[$_GET['ploi_action']];
                 ?>
-                <div class="w-full px-8 mx-auto max-w-5xl"
-                     x-data="{active: true, timer: 0}"
-                     x-show="active"
-                     x-init="window.setInterval(() => {
+                <div class="w-full px-8 mx-auto max-w-5xl" x-data="{active: true, timer: 0}" x-show="active" x-init="window.setInterval(() => {
                          if(timer < 100) {timer = timer + 0.5}; if (timer == 99.5) {window.location.replace('<?php echo admin_url('/options-general.php?page=ploi-settings') ?>');}
-                         }, 15); "
-                     x-show="timer <= 100"
-                >
+                         }, 15); " x-show="timer <= 100">
                     <div class="space-y-6 px-8 py-5">
                         <div class="relative max-w-full px-10 py-4 rounded-md bg-green-600 dark:bg-green-600 text-white text-sm font-bold px-4 py-3"
                              role="alert">
@@ -207,25 +204,26 @@ class PloiSettings
                                     <div class="col-span-1 lg:col-span-2 space-y-6">
                                         <div class="grid gap-4">
                                             <div x-data="{
-                                                isEditingToken: <?php echo !empty($this->token) ? 'false' : 'true'; ?>,
-                                                tokenFocus: function() {
-                                                    const tokenInput = this.$refs.tokenInput;
-                                                    tokenInput.focus();
-                                                    tokenInput.select();
-                                                },
-                                                serverId: '<?php echo !empty($this->server_id) ? $this->server_id : 'false'; ?>',
-                                                siteId: '<?php echo !empty($this->site_id) ? $this->site_id : 'false'; ?>',
-                                                isEditingServer: <?php echo !empty($this->server_id) ? 'false' : 'true'; ?>,
-                                                serverFocus: function() {
-                                                    const serverSelect = this.$refs.serverSelect;
-                                                    serverSelect.focus();
-                                                },
-                                                isEditingSite: <?php echo !empty($this->site_id) ? 'false' : 'true'; ?>,
-                                                siteFocus: function() {
-                                                    const siteSelect = this.$refs.siteSelect;
-                                                    siteSelect.focus();
-                                                },
-                                                showIdFeilds: <?php echo !empty($this->token) ? 'true' : 'false'; ?>
+                                                    isEditingToken: <?php echo !empty($this->token) ? 'false' : 'true'; ?>,
+                                                    tokenFocus: function() {
+                                                        const tokenInput = this.$refs.tokenInput;
+                                                        tokenInput.focus();
+                                                        tokenInput.select();
+                                                    },
+                                                    serverId: '<?php echo !empty($this->server_id) ? $this->server_id : 'false'; ?>',
+                                                    siteId: '<?php echo !empty($this->site_id) ? $this->site_id : 'false'; ?>',
+                                                    isEditingServer: <?php echo !empty($this->server_id) ? 'false' : 'true'; ?>,
+                                                    serverFocus: function() {
+                                                        const serverSelect = this.$refs.serverSelect;
+                                                        serverSelect.focus();
+                                                    },
+                                                    isEditingSite: <?php echo !empty($this->site_id) ? 'false' : 'true'; ?>,
+                                                    siteFocus: function() {
+                                                        const siteSelect = this.$refs.siteSelect;
+                                                        siteSelect.focus();
+                                                    },
+                                                    showIdFeilds: <?php echo !empty($this->token) ? 'true' : 'false'; ?>
+
                                                 }">
                                                 <?php
                                                 settings_fields('ploi_settings_option_group');
@@ -249,6 +247,188 @@ class PloiSettings
                             </footer>
                         </form>
                     </div>
+                    <?php if (in_array($opcache_status, ['enabled', 'disabled']) || in_array($fastcgi_status, ['enabled', 'disabled'])) {
+                        ?>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 divide-gray-50">
+                            <div class="col-span-1 rounded-lg shadow bg-white dark:bg-gray-700 dark:text-gray-300 divide-y divide-gray-200 dark:divide-gray-800">
+                                <div class="dark:border-gray-800">
+                                    <div class="flex items-center p-4 dark:border-gray-800">
+                                        <div class="w-2 h-16 rounded-md <?php echo $opcache_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
+                                        <div class="ml-4 w-full">
+                                            <p class="text-base mb-1 text-center">
+                                                <span class="text-xl font-medium">OPCache</span>
+                                                <!--                                                <span>· -->
+                                                <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
+                                                ?>
+                                                <!--</span>-->
+                                            </p>
+                                            <div class="grid
+                                             <?php echo $opcache_status === 'enabled' ? 'grid-cols-2' : 'grid-cols-1'; ?>
+                                             gap-x-2
+                                             sm:gap-x-4
+                                                ">
+                                                <div class="col-auto text-center">
+                                                    <a class="
+                                                    inline-flex
+                                                    items-center
+                                                    justify-center
+                                                    text-xs
+                                                    sm:text-sm
+                                                    font-medium
+                                                    border
+                                                    rounded-md
+                                                    transition-all
+                                                    ease-in-out
+                                                    duration-100
+                                                    focus:outline-none
+                                                    focus:shadow-outline
+                                                    text-white
+                                                    shadow
+                                                    px-3 py-2
+                                                    w-full
+                                                    <?php
+                                                    if ($opcache_status == 'enabled') {
+                                                        echo 'border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
+                                                    } else {
+                                                        echo 'border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
+                                                    }
+                                                    ?>
+                                                    "
+                                                       href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_opcache'), 'toggle_opcache'); ?>">
+                                                        <?php echo $opcache_status === 'enabled' ? 'Disable OPCache' : 'Enable OPCache'; ?>
+                                                    </a>
+                                                </div>
+                                                <?php if ($opcache_status === 'enabled') {
+                                                    ?>
+                                                    <div class="col-auto text-center">
+                                                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=flush_opcache'), 'flush_opcache'); ?>"
+                                                           class="inline-flex
+                                                        items-center
+                                                        justify-center
+                                                        text-xs
+                                                        sm:text-sm
+                                                        border
+                                                        rounded-md
+                                                        transition-all
+                                                        ease-in-out
+                                                        duration-100
+                                                        focus:outline-none
+                                                        focus:shadow-outline
+                                                        border-primary-500
+                                                        bg-primary-500
+                                                        text-white
+                                                        shadow
+                                                        hover:bg-primary-400
+                                                        hover:border-primary-400
+                                                        focus:border-primary-700
+                                                        focus:bg-primary-600
+                                                        px-3 py-2
+                                                        w-full
+                                                        w-full
+                                                        ">
+                                                            Flush OPCache
+                                                        </a>
+                                                    </div>
+                                                    <?php
+                                                } ?>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-1 rounded-lg shadow bg-white dark:bg-gray-700 dark:text-gray-300 divide-y divide-gray-200 dark:divide-gray-800">
+                                <div class="dark:border-gray-800">
+                                    <div class="flex items-center p-4 dark:border-gray-800">
+                                        <div class="w-2 h-16 rounded-md <?php echo $fastcgi_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
+                                        <div class="ml-4 w-full">
+                                            <p class="text-base mb-1 text-center">
+                                                <span class="text-xl font-medium">FastCgi Cache</span>
+                                                <!--                                                <span>· -->
+                                                <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
+                                                ?>
+                                                <!--</span>-->
+                                            </p>
+                                            <div class="grid
+                                             <?php echo $fastcgi_status === 'enabled' ? 'grid-cols-2' : 'grid-cols-1'; ?>
+                                             gap-x-2
+                                             sm:gap-x-4
+                                                ">
+                                                <div class="col-auto text-center">
+                                                    <a class="
+                                                    inline-flex
+                                                    items-center
+                                                    justify-center
+                                                    text-xs
+                                                    sm:text-sm
+                                                    font-medium
+                                                    border
+                                                    rounded-md
+                                                    transition-all
+                                                    ease-in-out
+                                                    duration-100
+                                                    focus:outline-none
+                                                    focus:shadow-outline
+                                                    text-white
+                                                    shadow
+                                                    px-3 py-2
+                                                    w-full
+                                                    <?php
+                                                    if ($fastcgi_status == 'enabled') {
+                                                        echo 'border-danger-500 bg-danger-500 hover:bg-danger-400 hover:border-danger-400 focus:border-danger-700 focus:bg-danger-600';
+                                                    } else {
+                                                        echo 'border-success-500 bg-success-500 hover:bg-success-400 hover:border-success-400 focus:border-success-700 focus:bg-success-600';
+                                                    }
+                                                    ?>
+                                                    "
+                                                       href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'); ?>">
+                                                        <?php echo $fastcgi_status === 'enabled' ? 'Disable FastCgi' : 'Enable FastCgi'; ?>
+                                                    </a>
+                                                </div>
+                                                <?php if ($fastcgi_status === 'enabled') {
+                                                    ?>
+                                                    <div class="col-auto text-center">
+                                                        <a href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=flush_fastcgicache'), 'flush_fastcgicache'); ?>"
+                                                           class="inline-flex
+                                                        items-center
+                                                        justify-center
+                                                        text-xs
+                                                        sm:text-sm
+                                                        border
+                                                        rounded-md
+                                                        transition-all
+                                                        ease-in-out
+                                                        duration-100
+                                                        focus:outline-none
+                                                        focus:shadow-outline
+                                                        border-primary-500
+                                                        bg-primary-500
+                                                        text-white
+                                                        shadow
+                                                        hover:bg-primary-400
+                                                        hover:border-primary-400
+                                                        focus:border-primary-700
+                                                        focus:bg-primary-600
+                                                        px-3 py-2
+                                                        w-full
+                                                        w-full
+                                                        ">
+                                                            Flush FastCgi
+                                                        </a>
+                                                    </div>
+                                                    <?php
+                                                } ?>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    } ?>
+
+
                 </div>
             </div>
         </div>
@@ -268,7 +448,7 @@ class PloiSettings
                 }
             }
         </script>
-        </div>
+
         <?php
     }
 
@@ -277,7 +457,7 @@ class PloiSettings
         register_setting(
             'ploi_settings_option_group', // option_group
             'ploi_settings' // option_name
-//            [$this, 'ploi_settings_sanitize'] // sanitize_callback
+        //            [$this, 'ploi_settings_sanitize'] // sanitize_callback
         );
 
         add_settings_section(
@@ -312,69 +492,8 @@ class PloiSettings
         );
     }
 
-    public function ploi_settings_sanitize($input)
-    {
-//        echo print_r($input, true);
-        error_log(print_r($input, true));
-        $sanitary_values = [];
-        if (isset($input['api_key'])) {
-            $encrypted_api_key = (new Crypto)->encrypt(sanitize_text_field($input['api_key']));
-            $sanitary_values['api_key'] = $encrypted_api_key;
-        }
-        if (isset($input['server_id'])) {
-            $sanitary_values['server_id'] = sanitize_text_field($input['server_id']);
-        }
-
-        if (isset($input['site_id'])) {
-            $sanitary_values['site_id'] = sanitize_text_field($input['site_id']);
-        }
-
-//        if (isset($input['server_id'])) {
-//            $sanitary_values['server_id'] = $input['server_id'];
-//            if (empty($input['server_id'])) {
-//                $server_ip = $_SERVER['REMOTE_ADDR'];
-//
-////                Used for local dev
-//                if (function_exists('getenv')) {
-//                    if (getenv('WP_ENV') == 'development') {
-//                        if (getenv('DEV_SERVER', false)) {
-//                            $server_ip = getenv('DEV_SERVER');
-//                        }
-//                    }
-//                }
-//
-//                $server = (new Ploi($input['api_key']))->servers($server_ip);
-//                $sanitary_values['server_id'] = $server[0]->id;
-//            }
-//        }
-//
-//
-//        if (isset($input['site_id'])) {
-//            $sanitary_values['site_id'] = sanitize_text_field($input['site_id']);
-//            if (empty($input['site_id']) && isset($sanitary_values['server_id']) && !empty($sanitary_values['server_id'])) {
-//                $domain = str_ireplace('www.', '', parse_url(site_url(), PHP_URL_HOST));
-//
-//                //                Used for local dev
-//                if (function_exists('getenv')) {
-//                    if (getenv('WP_ENV') == 'development') {
-//                        if (getenv('DEV_SITE', false)) {
-//                            $domain = getenv('DEV_SITE');
-//                        }
-//                    }
-//                }
-//
-//                $sites = (new Ploi($input['api_key']))->sites($sanitary_values['server_id'], $domain);
-//                $sanitary_values['site_id'] = $sites[0]->id;
-//            }
-//        }
-
-
-        return $sanitary_values;
-    }
-
     public function ploi_settings_section_info()
     {
-
     }
 
     public function api_key_callback()
@@ -386,13 +505,9 @@ class PloiSettings
                 <span @click="isEditingToken = true; $nextTick(() => tokenFocus())">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
             </div>
 
-            <input x-show="isEditingToken"
-                   type="text"
-                   placeholder=""
-                   x-ref="tokenInput"
+            <input x-show="isEditingToken" type="text" placeholder="" x-ref="tokenInput"
                    class="p-1 form-input w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
-                   name="ploi_settings[api_key]"
-                   value="<?php echo $this->token; ?>">
+                   name="ploi_settings[api_key]" value="<?php echo $this->token; ?>">
 
         </div>
         <?php
@@ -406,9 +521,7 @@ class PloiSettings
                 Server
             </label>
 
-            <select x-show="isEditingServer"
-                    x-ref="serverSelect"
-                    x-model="serverId"
+            <select x-show="isEditingServer" x-ref="serverSelect" x-model="serverId"
                     class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
                     name="ploi_settings[server_id]" id="server_id">
                 <?php foreach ($this->servers as $server) {
@@ -425,15 +538,16 @@ class PloiSettings
                 } ?>
             </select>
             <div class="text-sm font-medium uppercase" x-show="!isEditingServer">
-                    <span @click="isEditingServer = true; $nextTick(() => serverFocus())"
-                          class="inline-block bg-primary-500 mt-1 px-3 py-1">
-    <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
-                        <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
-                        <!--                                                                                              clip-rule="evenodd"></path></svg>-->
-                        <?php echo $this->server_name; ?>
-                        <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1"><path
-                                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
-                    </span>
+                <span @click="isEditingServer = true; $nextTick(() => serverFocus())"
+                      class="inline-block bg-primary-500 mt-1 px-3 py-1">
+                    <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
+                    <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
+                    <!--                                                                                              clip-rule="evenodd"></path></svg>-->
+                    <?php echo $this->server_name; ?>
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                </span>
             </div>
         </div>
         <?php
@@ -448,9 +562,7 @@ class PloiSettings
                 Site
             </label>
 
-            <select x-show="isEditingSite"
-                    x-ref="siteSelect"
-                    x-model="siteId"
+            <select x-show="isEditingSite" x-ref="siteSelect" x-model="siteId"
                     class="p-1 form-select w-full max-w-full rounded-md shadow-sm mt-2 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-900"
                     name="ploi_settings[site_id]" id="site_id">
                 <?php
@@ -458,7 +570,7 @@ class PloiSettings
                     $server = explode('|', $server);
                     ?>
                     <optgroup label="<?php echo $server[1] ?>"
-                              x-bind:disabled="serverId != '<?php echo $server[0]; ?>'">
+                              x-bind:disabled="serverId != '' && serverId != '<?php echo $server[0]; ?>'">
                         <?php
                         foreach ($server_sites as $site) {
                             $selected = '';
@@ -480,15 +592,16 @@ class PloiSettings
                 ?>
             </select>
             <div class="text-sm font-medium uppercase" x-show="!isEditingSite">
-                    <span @click="isEditingSite = true; $nextTick(() => siteFocus())"
-                          class="inline-block bg-primary-500 mt-1 px-3 py-1">
-    <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
-                        <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
-                        <!--                                                                                              clip-rule="evenodd"></path></svg>-->
-                        <?php echo $this->site_domain; ?>
-                        <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1"><path
-                                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
-                    </span>
+                <span @click="isEditingSite = true; $nextTick(() => siteFocus())"
+                      class="inline-block bg-primary-500 mt-1 px-3 py-1">
+                    <!--                    <svg viewBox="0 0 20 20" fill="currentColor" class="server w-6 h-6"><path fill-rule="evenodd"-->
+                    <!--                                                                                              d="M2 5a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 1a1 1 0 11-2 0 1 1 0 012 0zM2 13a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2zm14 1a1 1 0 11-2 0 1 1 0 012 0z"-->
+                    <!--                                                                                              clip-rule="evenodd"></path></svg>-->
+                    <?php echo $this->site_domain; ?>
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="inline-block pencil w-3 h-3 ml-1">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                </span>
             </div>
         </div>
 
@@ -520,4 +633,3 @@ if (is_admin()) {
  * $sms_secret_key_1 = $ploi_settings_options['sms_secret_key_1']; // Size Attribute
  * $sms_text_2 = $ploi_settings_options['sms_text_2']; // Availability Text
  */
-

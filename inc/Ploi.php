@@ -19,7 +19,9 @@ class Ploi
         $this->baseUrl = 'https://ploi.io/api/';
         $ploi_settings_options = get_option('ploi_settings');
 
-        $this->token = $api_key;
+        if ($api_key) {
+            $this->token = (new Crypto)->decrypt($api_key);
+        }
         if (!$api_key && isset($ploi_settings_options['api_key']) && !empty($ploi_settings_options['api_key'])) {
             $this->token = (new Crypto)->decrypt($ploi_settings_options['api_key']);
         }
