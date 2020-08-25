@@ -52,7 +52,7 @@ class PloiAdminMenu
             $admin_bar->add_node([
                 'parent' => 'ploi-cache',
                 'id' => 'flush-fastcgicache',
-                'title' => 'Flush Fast-Cgi Cache',
+                'title' => 'Flush FastCGI Cache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=flush_fastcgicache'), 'flush_fastcgicache'),
                 'meta' => ['title' => __('Flush FastCGI Cache', 'ploi')],
             ]);
@@ -61,7 +61,7 @@ class PloiAdminMenu
             $admin_bar->add_node([
                 'parent' => 'ploi-cache',
                 'id' => 'toggle-fastcgicache',
-                'title' => $this->fastcgi_status == 'enabled' ? 'Disable Fast-Cgi Cache' : 'Enable Fast-Cgi Cache',
+                'title' => $this->fastcgi_status == 'enabled' ? 'Disable FastCGI Cache' : 'Enable FastCGI Cache',
                 'href' => wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'),
                 'meta' => ['title' => __('Toggle FastCGI Cache', 'ploi')],
             ]);
