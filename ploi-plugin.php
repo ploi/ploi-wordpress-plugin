@@ -2,7 +2,7 @@
 /*
 Plugin Name: Ploi Plugin
 Description: Manage your site options and variables via this plugin
-Plugin URI: https://ploi.io
+Plugin URI: https://github.com/ploi-deploy/ploi-wordpress-plugin
 Author: Ploi
 Author URI: https://ploi.io
 Version: 1.0
