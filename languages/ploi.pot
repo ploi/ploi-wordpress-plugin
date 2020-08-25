@@ -27,15 +27,15 @@ msgid "Ploi Cache"
 msgstr ""
 
 #: inc/PloiAdminMenu.php:39 inc/PloiSettings.php:327
-msgid "Flush OPCache"
+msgid "Flush OPcache"
 msgstr ""
 
 #: inc/PloiAdminMenu.php:48 inc/PloiSettings.php:297
-msgid "Disable OPCache"
+msgid "Disable OPcache"
 msgstr ""
 
 #: inc/PloiAdminMenu.php:48 inc/PloiSettings.php:297
-msgid "Enable OPCache"
+msgid "Enable OPcache"
 msgstr ""
 
 #: inc/PloiAdminMenu.php:58
@@ -59,7 +59,7 @@ msgid "Save Settings"
 msgstr ""
 
 #: inc/PloiSettings.php:259
-msgid "OPCache"
+msgid "OPcache"
 msgstr ""
 
 #: inc/PloiSettings.php:344

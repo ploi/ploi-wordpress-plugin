@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Ploi Wordpress Plugin
-Description: Flashes Ploi Opcache and Fast-cgi cahe
+Description: Manage your site options and variables via this plugin
 Plugin URI: https://ploi.io
 Author: Ploi
 Author URI: https://ploi.io
-Version: 2.0
+Version: 1.0
 Text Domain: ploi
 */
 

@@ -27,7 +27,6 @@ class PloiSettings
 
     public function encrypt_api_key_on_save($new_value)
     {
-
         if (!$new_value['api_key']) {
             $new_value['site_id'] = '';
             $new_value['server_id'] = '';
@@ -60,7 +59,7 @@ class PloiSettings
             if (isset($new_value['server_id']) && !empty($new_value['server_id'])) {
                 $domain = str_ireplace('www.', '', parse_url(site_url(), PHP_URL_HOST));
 
-                //                Used for local dev
+                // Used for local dev
                 if (function_exists('getenv')) {
                     if (getenv('WP_ENV') == 'development') {
                         if (getenv('DEV_SITE', false)) {
@@ -94,8 +93,8 @@ class PloiSettings
     public function ploi_settings_add_plugin_page()
     {
         add_options_page(
-            'Ploi Cache Settings', // page_title
-            'Ploi Cache Settings', // menu_title
+            'Ploi Settings', // page_title
+            'Ploi Settings', // menu_title
             'manage_options', // capability
             'ploi-settings', // menu_slug
             [$this, 'ploi_settings_create_admin_page'] // function
@@ -147,12 +146,12 @@ class PloiSettings
             <div class="flex-1 py-6">
                 <?php
                 $timer_text = [
-                    'enable-opcache' => 'Enabling OPCache',
-                    'disable-opcache' => 'Disabling OPCache',
-                    'refresh-opcache' => 'Purging OPCache',
-                    'enable-fastcgi' => 'Enabling FastCgi Cache',
-                    'disable-fastcgi' => 'Disabling FastCgi Cache',
-                    'refresh-fastcgi' => 'Flushing FastCgi Cache',
+                    'enable-opcache' => 'Enabling OPcache',
+                    'disable-opcache' => 'Disabling OPcache',
+                    'refresh-opcache' => 'Flushing OPcache',
+                    'enable-fastcgi' => 'Enabling FastCGI Cache',
+                    'disable-fastcgi' => 'Disabling FastCGI Cache',
+                    'refresh-fastcgi' => 'Flushing FastCGI Cache',
                 ];
                 if (isset($_GET['ploi_action']) && isset($timer_text[$_GET['ploi_action']])) {
                 $action_text = $timer_text[$_GET['ploi_action']];
@@ -256,7 +255,7 @@ class PloiSettings
                                         <div class="w-2 h-16 rounded-md <?php echo $opcache_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
                                         <div class="ml-4 w-full">
                                             <p class="text-base mb-1 text-center">
-                                                <span class="text-xl font-medium"><?php echo __('OPCache', 'ploi'); ?></span>
+                                                <span class="text-xl font-medium"><?php echo __('OPcache', 'ploi'); ?></span>
                                                 <!--                                                <span>· -->
                                                 <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
                                                 ?>
@@ -294,7 +293,7 @@ class PloiSettings
                                                     ?>
                                                     "
                                                        href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_opcache'), 'toggle_opcache'); ?>">
-                                                        <?php echo $opcache_status === 'enabled' ? __('Disable OPCache', 'ploi') : __('Enable OPCache', 'ploi'); ?>
+                                                        <?php echo $opcache_status === 'enabled' ? __('Disable OPcache', 'ploi') : __('Enable OPcache', 'ploi'); ?>
                                                     </a>
                                                 </div>
                                                 <?php if ($opcache_status === 'enabled') {
@@ -324,7 +323,7 @@ class PloiSettings
                                                         px-3 py-2
                                                         w-full
                                                         ">
-                                                            <?php echo __('Flush OPCache', 'ploi'); ?>
+                                                            <?php echo __('Flush OPcache', 'ploi'); ?>
                                                         </a>
                                                     </div>
                                                     <?php
@@ -341,7 +340,7 @@ class PloiSettings
                                         <div class="w-2 h-16 rounded-md <?php echo $fastcgi_status === 'enabled' ? 'bg-success-400' : 'bg-danger-400'; ?>"></div>
                                         <div class="ml-4 w-full">
                                             <p class="text-base mb-1 text-center">
-                                                <span class="text-xl font-medium"><?php echo __('FastCgi Cache', 'ploi'); ?></span>
+                                                <span class="text-xl font-medium"><?php echo __('FastCGI Cache', 'ploi'); ?></span>
                                                 <!--                                                <span>· -->
                                                 <?php //echo $opcache_status === 'enabled' ? 'Enabled' : 'Disabled';
                                                 ?>
@@ -379,7 +378,7 @@ class PloiSettings
                                                     ?>
                                                     "
                                                        href="<?php echo wp_nonce_url(admin_url('admin-post.php?action=toggle_fastcgicache'), 'toggle_fastcgicache'); ?>">
-                                                        <?php echo $fastcgi_status === 'enabled' ? __('Disable FastCgi', 'ploi') : __('Enable FastCgi', 'ploi'); ?>
+                                                        <?php echo $fastcgi_status === 'enabled' ? __('Disable FastCGI', 'ploi') : __('Enable FastCGI', 'ploi'); ?>
                                                     </a>
                                                 </div>
                                                 <?php if ($fastcgi_status === 'enabled') {
@@ -410,7 +409,7 @@ class PloiSettings
                                                         w-full
                                                         w-full
                                                         ">
-                                                            <?php echo __('Flush FastCgi', 'ploi'); ?>
+                                                            <?php echo __('Flush FastCGI', 'ploi'); ?>
                                                         </a>
                                                     </div>
                                                     <?php
