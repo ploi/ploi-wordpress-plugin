@@ -2,7 +2,7 @@
 
 This is the source code of the Ploi WordPress plugin. This plugin makes it easy to flush OPcache and FastCGI cache (if enabled).
 
-<p align="center"><img src="https://github.com/ploi-deploy/ploi-wordpress-plugin/blob/master/example.gif" width="400"></p>
+<p align="center"><img src="https://github.com/ploi-deploy/ploi-wordpress-plugin/blob/master/example.gif" width="600"></p>
 
 ## Getting started
 
