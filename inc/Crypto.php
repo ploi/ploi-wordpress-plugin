@@ -3,7 +3,6 @@ defined('ABSPATH') or exit;
 
 class Crypto
 {
-
     private $key;
     private $salt;
 
