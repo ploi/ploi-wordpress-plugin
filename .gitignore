@@ -3,4 +3,5 @@ node_modules/
 .idea/
 npm-debug.log
 yarn-error.log
-
+ploi-wordpress-plugin.zip
+.DS_Store
