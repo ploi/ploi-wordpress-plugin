@@ -9,7 +9,7 @@ zip -r ploi-plugin.zip \
     LICENSE \
     mix-manifest.json \
     package.json \
-    ploi-wordpress-plugin.php \
+    ploi-plugin.php \
     README.md \
     tailwind.config.json \
     webpack.mix.js
