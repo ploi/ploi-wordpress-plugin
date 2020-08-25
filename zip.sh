@@ -12,4 +12,5 @@ zip -r ploi-plugin.zip \
     ploi-plugin.php \
     README.md \
     tailwind.config.json \
-    webpack.mix.js
+    webpack.mix.js \
+    readme.txt
