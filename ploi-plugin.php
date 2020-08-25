@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Ploi Wordpress Plugin
+Plugin Name: Ploi Plugin
 Description: Manage your site options and variables via this plugin
 Plugin URI: https://ploi.io
 Author: Ploi

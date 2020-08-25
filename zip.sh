@@ -1,4 +1,4 @@
-zip -r ploi-wordpress-plugin.zip \
+zip -r ploi-plugin.zip \
     assets \
     inc \
     languages \
