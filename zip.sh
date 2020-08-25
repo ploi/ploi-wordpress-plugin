@@ -1,3 +1,5 @@
+rm ploi-plugin.zip
+
 zip -r ploi-plugin.zip \
     assets \
     inc \
