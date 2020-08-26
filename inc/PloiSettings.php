@@ -34,7 +34,7 @@ class PloiSettings
         }
 
         if (isset($new_value['api_key'])) {
-            $new_value['api_key'] = (new Crypto)->encrypt(sanitize_text_field($new_value['api_key']));
+            $new_value['api_key'] = (new PloiStringEncrypter)->encrypt(sanitize_text_field($new_value['api_key']));
         }
 
         $server_id = false;
@@ -113,7 +113,7 @@ class PloiSettings
             $this->site_id = $this->ploi_settings_options['site_id'];
         }
         if (isset($this->ploi_settings_options['api_key']) && !empty($this->ploi_settings_options['api_key'])) {
-            $this->token = (new Crypto)->decrypt($this->ploi_settings_options['api_key']);
+            $this->token = (new PloiStringEncrypter)->decrypt($this->ploi_settings_options['api_key']);
             $this->servers = (new Ploi())->servers();
             $this->getSites();
         }
@@ -154,7 +154,7 @@ class PloiSettings
                     'refresh-fastcgi' => 'Flushing FastCGI Cache',
                 ];
                 if (isset($_GET['ploi_action']) && isset($timer_text[$_GET['ploi_action']])) {
-                $action_text = $timer_text[$_GET['ploi_action']];
+                $action_text = $timer_text[sanitize_text_field($_GET['ploi_action'])];
                 ?>
                 <div class="w-full px-8 mx-auto max-w-5xl" x-data="{active: true, timer: 0}" x-show="active" x-init="window.setInterval(() => {
                          if(timer < 100) {timer = timer + 0.5}; if (timer == 99.5) {window.location.replace('<?php echo admin_url('/options-general.php?page=ploi-settings') ?>');}

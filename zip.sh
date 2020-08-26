@@ -1,6 +1,6 @@
-rm ploi-plugin.zip
+rm ploi.zip
 
-zip -r ploi-plugin.zip \
+zip -r ploi.zip \
     assets \
     inc \
     languages \
@@ -9,7 +9,7 @@ zip -r ploi-plugin.zip \
     LICENSE \
     mix-manifest.json \
     package.json \
-    ploi-plugin.php \
+    ploi.php \
     README.md \
     tailwind.config.json \
     webpack.mix.js \

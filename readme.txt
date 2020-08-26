@@ -1,4 +1,4 @@
-=== Ploi Plugin ===
+=== Ploi ===
 Contributors: ploi
 Tags: server management, ploi
 Requires at least: 5.5

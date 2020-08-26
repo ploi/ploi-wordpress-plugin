@@ -20,10 +20,10 @@ class Ploi
         $ploi_settings_options = get_option('ploi_settings');
 
         if ($api_key) {
-            $this->token = (new Crypto)->decrypt($api_key);
+            $this->token = (new PloiStringEncrypter)->decrypt($api_key);
         }
         if (!$api_key && isset($ploi_settings_options['api_key']) && !empty($ploi_settings_options['api_key'])) {
-            $this->token = (new Crypto)->decrypt($ploi_settings_options['api_key']);
+            $this->token = (new PloiStringEncrypter)->decrypt($ploi_settings_options['api_key']);
         }
         if (!$this->token) {
             return;
@@ -35,9 +35,9 @@ class Ploi
             $this->site_id = $ploi_settings_options['site_id'];
         }
         $this->headers = [
-            'Content-Type: application/json',
-            'Accept: application/json',
-            'Authorization: Bearer ' . $this->token,
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->token,
         ];
     }
 
@@ -47,38 +47,35 @@ class Ploi
         if (is_array($args) && !empty($args)) {
             $url = add_query_arg($args, $url);
         }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
 
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        $response = null;
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
-
-        $body = json_encode($body);
-
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-
-// send the request and save response to $response
-        $response = curl_exec($ch);
-
-// stop if fails
-        if (!$response) {
-            die('Error: "' . curl_error($ch) . '" - Code: ' . curl_errno($ch));
+        if (strtolower($method) === 'post') {
+            $response = wp_remote_post($url, [
+                'headers' => $this->headers,
+                'body' => json_encode($body)
+            ]);
         }
 
+        if (strtolower($method) === 'get') {
+            $response = wp_remote_get($url, [
+                'headers' => $this->headers
+            ]);
+        }
 
-// close curl resource to free up system resources
+        $content = wp_remote_retrieve_body($response);
+
+
+
+        if (!$response) {
+            die('Error: "' . wp_remote_retrieve_response_message($response) . '" - Code: ' . wp_remote_retrieve_response_code($response));
+        }
+
         $response = (object)[
-            'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
-            'response' => json_decode($response),
+            'status' => wp_remote_retrieve_response_code($response),
+            'response' => json_decode($content),
         ];
-        curl_close($ch);
-//        echo $this->token;
-//        echo print_r($response, true);
-//        error_log(print_r($response, true));
+
         return $response;
     }
 

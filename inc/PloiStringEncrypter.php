@@ -1,7 +1,8 @@
 <?php
+
 defined('ABSPATH') or exit;
 
-class Crypto
+class PloiStringEncrypter
 {
     private $key;
     private $salt;

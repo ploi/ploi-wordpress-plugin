@@ -5,7 +5,6 @@ defined('ABSPATH') or exit;
 class PloiAdminMenu
 {
     private $referer;
-    private $query_args;
     private $opcache_status;
     private $fastcgi_status;
 
@@ -78,15 +77,14 @@ class PloiAdminMenu
     private function verifyRequest()
     {
         $this->referer = $_SERVER['HTTP_REFERER'];
-        $this->query_args = $_GET;
 
-        if (!isset($this->query_args['action'], $this->query_args['_wpnonce'])) {
+        if (!isset($_GET['action'], $_GET['_wpnonce'])) {
 
             wp_safe_redirect($this->referer);
             return;
         }
 
-        if (!wp_verify_nonce($this->query_args['_wpnonce'], $this->query_args['action'])) {
+        if (!wp_verify_nonce($_GET['_wpnonce'], $_GET['action'])) {
 
             wp_safe_redirect($this->referer);
             return;
