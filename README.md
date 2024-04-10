@@ -37,6 +37,7 @@ beforehand with the Ploi team to make sure your PR won't get rejected for nothin
 
 * **Giorgos Tsarmpopoulos** - *Initial work* - [tsarbo](https://github.com/tsarbo)
 * **Dennis Smink** - *Maintainer* - [cannonb4ll](https://github.com/cannonb4ll)
+* **Dieter Jeanty** - *Maintainer* - [Webtica](https://github.com/Webtica)
 
 ## License
 

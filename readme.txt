@@ -2,8 +2,8 @@
 Contributors: ploi
 Tags: server management, ploi
 Requires at least: 5.5
-Tested up to: 5.5
-Stable tag: 1.0.0
+Tested up to: 6.5.2
+Stable tag: 1.1.0
 License: GPLv2 or later
 
 This plugin makes it easy to flush OPcache and FastCGI cache (if enabled) from your Ploi servers & sites.
@@ -22,7 +22,13 @@ After installation, you will have to generate a API key in Ploi: https://ploi.io
 
 == Changelog ==
 
-= 1.0.0 =
-*Initial release - 25 august 2020*
+= 1.1.0 - 10-04-2024 =
+* Updated codebase to make the plugin leaner
+* Added possibility to clear OPcache
+* Added possibility to clear FastCGI cache 
+* Added possibility to clear caches via admin menu bar
+* Added Auto clear caches on Elementor save
+* Added Auto clear caches on WP-Rocket clear
 
-This is the initial release
+= 1.0.0 - 25-08-2020 =
+* Initial release
