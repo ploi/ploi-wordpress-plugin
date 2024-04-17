@@ -55,41 +55,41 @@ class PloiSettings {
 		);
 
 		add_settings_field(
-			'api_key_0', // id
+			'ploi_api_key', // id
 			'API Key', // title
-			array( $this, 'api_key_0_callback' ), // callback
+			array( $this, 'ploi_api_key_callback' ), // callback
 			'ploi-settings-admin', // page
 			'ploi_settings_setting_section' // section
 		);
 
 		add_settings_field(
-			'server_id_1', // id
+			'ploi_server_id', // id
 			'Server ID', // title
-			array( $this, 'server_id_1_callback' ), // callback
+			array( $this, 'ploi_server_id_callback' ), // callback
 			'ploi-settings-admin', // page
 			'ploi_settings_setting_section' // section
 		);
 
 		add_settings_field(
-			'site_id_2', // id
+			'ploi_site_id', // id
 			'Site ID', // title
-			array( $this, 'site_id_2_callback' ), // callback
+			array( $this, 'ploi_site_id_callback' ), // callback
 			'ploi-settings-admin', // page
 			'ploi_settings_setting_section' // section
 		);
 
 		add_settings_field(
-			'clear_opcache_3', // id
+			'ploi_clear_opcache', // id
 			'Clear OpCache', // title
-			array( $this, 'clear_opcache_3_callback' ), // callback
+			array( $this, 'ploi_clear_opcache_callback' ), // callback
 			'ploi-settings-admin', // page
 			'ploi_settings_setting_section' // section
 		);
 
 		add_settings_field(
-			'clear_fastcgi_cache_4', // id
+			'ploi_clear_fastcgi_cache', // id
 			'Clear FastCGI cache', // title
-			array( $this, 'clear_fastcgi_cache_4_callback' ), // callback
+			array( $this, 'ploi_clear_fastcgi_cache_callback' ), // callback
 			'ploi-settings-admin', // page
 			'ploi_settings_setting_section' // section
 		);
@@ -97,24 +97,24 @@ class PloiSettings {
 
 	public function ploi_settings_sanitize($input) {
 		$sanitary_values = array();
-		if ( isset( $input['api_key_0'] ) ) {
-			$sanitary_values['api_key_0'] = sanitize_text_field( $input['api_key_0'] );
+		if ( isset( $input['ploi_api_key'] ) ) {
+			$sanitary_values['ploi_api_key'] = sanitize_text_field( $input['ploi_api_key'] );
 		}
 
-		if ( isset( $input['server_id_1'] ) ) {
-			$sanitary_values['server_id_1'] = sanitize_text_field( $input['server_id_1'] );
+		if ( isset( $input['ploi_server_id'] ) ) {
+			$sanitary_values['ploi_server_id'] = sanitize_text_field( $input['ploi_server_id'] );
 		}
 
-		if ( isset( $input['site_id_2'] ) ) {
-			$sanitary_values['site_id_2'] = sanitize_text_field( $input['site_id_2'] );
+		if ( isset( $input['ploi_site_id'] ) ) {
+			$sanitary_values['ploi_site_id'] = sanitize_text_field( $input['ploi_site_id'] );
 		}
 
-		if ( isset( $input['clear_opcache_3'] ) ) {
-			$sanitary_values['clear_opcache_3'] = $input['clear_opcache_3'];
+		if ( isset( $input['ploi_clear_opcache'] ) ) {
+			$sanitary_values['ploi_clear_opcache'] = $input['ploi_clear_opcache'];
 		}
 
-		if ( isset( $input['clear_fastcgi_cache_4'] ) ) {
-			$sanitary_values['clear_fastcgi_cache_4'] = $input['clear_fastcgi_cache_4'];
+		if ( isset( $input['ploi_clear_fastcgi_cache'] ) ) {
+			$sanitary_values['ploi_clear_fastcgi_cache'] = $input['ploi_clear_fastcgi_cache'];
 		}
 
 		return $sanitary_values;
@@ -124,59 +124,49 @@ class PloiSettings {
 		
 	}
 
-	public function api_key_0_callback() {
+	public function ploi_api_key_callback() {
 
-		if (empty($this->ploi_settings_options['api_key_0'])){
+		if (empty($this->ploi_settings_options['ploi_api_key'])){
 			printf(
-				'<input class="regular-text" type="text" name="ploi_settings_option_name[api_key_0]" id="api_key_0" value="%s">',
-				isset( $this->ploi_settings_options['api_key_0'] ) ? esc_attr( $this->ploi_settings_options['api_key_0']) : ''
+				'<input class="regular-text" type="text" name="ploi_settings_option_name[ploi_api_key]" id="ploi_api_key" value="%s">',
+				isset( $this->ploi_settings_options['ploi_api_key'] ) ? esc_attr( $this->ploi_settings_options['ploi_api_key']) : ''
 			);
 		} else {
 			printf(
-				'<input class="regular-text" type="password" name="ploi_settings_option_name[api_key_0]" id="api_key_0" value="%s">',
-				isset( $this->ploi_settings_options['api_key_0'] ) ? esc_attr( $this->ploi_settings_options['api_key_0']) : ''
+				'<input class="regular-text" type="password" name="ploi_settings_option_name[ploi_api_key]" id="ploi_api_key" value="%s">',
+				isset( $this->ploi_settings_options['ploi_api_key'] ) ? esc_attr( $this->ploi_settings_options['ploi_api_key']) : ''
 			);
 		}
 	}
 
-	public function server_id_1_callback() {
+	public function ploi_server_id_callback() {
 		printf(
-			'<input class="regular-text" type="text" name="ploi_settings_option_name[server_id_1]" id="server_id_1" value="%s">',
-			isset( $this->ploi_settings_options['server_id_1'] ) ? esc_attr( $this->ploi_settings_options['server_id_1']) : ''
+			'<input class="regular-text" type="text" name="ploi_settings_option_name[ploi_server_id]" id="ploi_server_id" value="%s">',
+			isset( $this->ploi_settings_options['ploi_server_id'] ) ? esc_attr( $this->ploi_settings_options['ploi_server_id']) : ''
 		);
 	}
 
-	public function site_id_2_callback() {
+	public function ploi_site_id_callback() {
 		printf(
-			'<input class="regular-text" type="text" name="ploi_settings_option_name[site_id_2]" id="site_id_2" value="%s">',
-			isset( $this->ploi_settings_options['site_id_2'] ) ? esc_attr( $this->ploi_settings_options['site_id_2']) : ''
+			'<input class="regular-text" type="text" name="ploi_settings_option_name[ploi_site_id]" id="ploi_site_id" value="%s">',
+			isset( $this->ploi_settings_options['ploi_site_id'] ) ? esc_attr( $this->ploi_settings_options['ploi_site_id']) : ''
 		);
 	}
 
-	public function clear_opcache_3_callback() {
+	public function ploi_clear_opcache_callback() {
 		printf(
-			'<input type="checkbox" name="ploi_settings_option_name[clear_opcache_3]" id="clear_opcache_3" value="clear_opcache_3" %s>',
-			( isset( $this->ploi_settings_options['clear_opcache_3'] ) && $this->ploi_settings_options['clear_opcache_3'] === 'clear_opcache_3' ) ? 'checked' : ''
+			'<input type="checkbox" name="ploi_settings_option_name[ploi_clear_opcache]" id="ploi_clear_opcache" value="ploi_clear_opcache" %s>',
+			( isset( $this->ploi_settings_options['ploi_clear_opcache'] ) && $this->ploi_settings_options['ploi_clear_opcache'] === 'ploi_clear_opcache' ) ? 'checked' : ''
 		);
 	}
 
-	public function clear_fastcgi_cache_4_callback() {
+	public function ploi_clear_fastcgi_cache_callback() {
 		printf(
-			'<input type="checkbox" name="ploi_settings_option_name[clear_fastcgi_cache_4]" id="clear_fastcgi_cache_4" value="clear_fastcgi_cache_4" %s>',
-			( isset( $this->ploi_settings_options['clear_fastcgi_cache_4'] ) && $this->ploi_settings_options['clear_fastcgi_cache_4'] === 'clear_fastcgi_cache_4' ) ? 'checked' : ''
+			'<input type="checkbox" name="ploi_settings_option_name[ploi_clear_fastcgi_cache]" id="ploi_clear_fastcgi_cache" value="ploi_clear_fastcgi_cache" %s>',
+			( isset( $this->ploi_settings_options['ploi_clear_fastcgi_cache'] ) && $this->ploi_settings_options['ploi_clear_fastcgi_cache'] === 'ploi_clear_fastcgi_cache' ) ? 'checked' : ''
 		);
 	}
 
 }
 if ( is_admin() )
 	$ploi_settings = new PloiSettings();
-
-/* 
- * Retrieve this value with:
- * $ploi_settings_options = get_option( 'ploi_settings_option_name' ); // Array of All Options
- * $api_key_0 = $ploi_settings_options['api_key_0']; // API Key
- * $server_id_1 = $ploi_settings_options['server_id_1']; // Server ID
- * $site_id_2 = $ploi_settings_options['site_id_2']; // Site ID
- * $clear_opcache_3 = $ploi_settings_options['clear_opcache_3']; // Clear OpCache
- * $clear_fastcgi_cache_4 = $ploi_settings_options['clear_fastcgi_cache_4']; // Clear FastCGI cache
- */

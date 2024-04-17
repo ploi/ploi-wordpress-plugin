@@ -9,10 +9,10 @@ function add_clear_caches_to_admin_bar($wp_admin_bar) {
 	$ploi_settings_options = get_option( 'ploi_settings_option_name' ); // Array of All Options
 
     // Check if $ploi_settings_options is set and has the necessary keys
-    if (isset($ploi_settings_options['api_key_0'], $ploi_settings_options['server_id_1'], $ploi_settings_options['site_id_2'])) {
-        $ploi_api_key = $ploi_settings_options['api_key_0']; // API Key
-        $server_id = $ploi_settings_options['server_id_1']; // Server ID
-        $site_id = $ploi_settings_options['site_id_2']; // Site ID
+    if (isset($ploi_settings_options['ploi_api_key'], $ploi_settings_options['ploi_server_id'], $ploi_settings_options['ploi_site_id'])) {
+        $ploi_api_key = $ploi_settings_options['ploi_api_key']; // API Key
+        $server_id = $ploi_settings_options['ploi_server_id']; // Server ID
+        $site_id = $ploi_settings_options['ploi_site_id']; // Site ID
 
         if (empty($ploi_api_key) || empty($server_id) || empty($site_id)) {
             $wp_admin_bar->add_node( array(
