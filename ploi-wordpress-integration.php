@@ -19,3 +19,13 @@ require dirname(__FILE__).'/includes/ploi-wordpress-functions.php';
 require dirname(__FILE__).'/includes/ploi-wordpress-menubar.php';
 require dirname(__FILE__).'/includes/ploi-wordpress-notices.php';
 require dirname(__FILE__).'/includes/ploi-integrations.php';
+
+//load plugin updater
+require 'vendor/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+$ploiupdatechecker = PucFactory::buildUpdateChecker(
+	'https://github.com/ploi/ploi-wordpress-plugin/',
+	__FILE__,
+	'ploi-wordpress-plugin'
+);
+$ploiupdatechecker->getVcsApi()->enableReleaseAssets();
