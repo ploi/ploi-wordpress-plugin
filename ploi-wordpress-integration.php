@@ -5,7 +5,7 @@
  * Description: Easily integrate Ploi and manage your site options and variables via this plugin or clear cache.
  * Author: Ploi
  * Author URI: https://ploi.io
- * Version: 1.1.0
+ * Version: 1.1.2
  */
 
 // Exit if accessed directly
