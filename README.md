@@ -6,9 +6,7 @@ This is the source code of the Ploi WordPress plugin. This plugin makes it easy 
 
 ## Getting started
 
-Download the plugin from your WordPress installation, on the plugin page.
-
-You can either do this by searching in the WordPress plugin page, or uploading the ZIP downloaded from this repository.
+[Download](https://github.com/ploi/ploi-wordpress-plugin/archive/refs/heads/master.zip) the plugin, and upload it to your WordPress installation.
 
 After installation, you will have to generate a API key in Ploi: https://ploi.io/profile/api-keys and enter this in the
 plugin settings. Then you'll be able to select the proper server & site that needs to be attached to your WordPress installation.
