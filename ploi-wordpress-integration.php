@@ -10,7 +10,7 @@
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; 
+	exit;
 }
 
 //load plugins functionallity and settings
@@ -23,9 +23,11 @@ require dirname(__FILE__).'/includes/ploi-integrations.php';
 //load plugin updater
 require 'vendor/plugin-update-checker/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-$ploiupdatechecker = PucFactory::buildUpdateChecker(
+$ploiUpdateChecker = PucFactory::buildUpdateChecker(
 	'https://github.com/ploi/ploi-wordpress-plugin/',
 	__FILE__,
 	'ploi-wordpress-plugin'
 );
-$ploiupdatechecker->getVcsApi()->enableReleaseAssets();
+
+$ploiUpdateChecker->setBranch('master');
+$ploiUpdateChecker->getVcsApi()->enableReleaseAssets();
