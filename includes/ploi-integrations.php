@@ -19,14 +19,17 @@ function clear_ploi_caches_on_post_save($post_id) {
 }
 add_action('save_post', 'clear_ploi_caches_on_post_save');
 
-//Elementor
-add_action( 'elementor/editor/after_save', 'clear_ploi_caches' );
+// Cache clearing hook integration for various plugins
+$cache_clear_actions = [
+    'elementor/editor/after_save',        // Elementor
+    'after_rocket_clean_domain',          // WP-Rocket
+    'wp_cache_cleared',                   // WP Super Cache
+    'wpfc_delete_cache',                  // WP Fastest Cache
+    'flying_press_purge_url:after',       // FlyingPress - URL
+    'flying_press_purge_pages:after',     // FlyingPress - Pages
+    'flying_press_purge_everything:after' // FlyingPress - Everything
+];
 
-//WP-Rocket
-add_action( 'after_rocket_clean_domain', 'clear_ploi_caches' );
-
-//WP Super cache
-add_action( 'wp_cache_cleared', 'clear_ploi_caches' );
-
-//WP Fastest Cache
-add_action( 'wpfc_delete_cache', 'clear_ploi_caches' );
+foreach ($cache_clear_actions as $action) {
+    add_action($action, 'clear_ploi_caches');
+}
