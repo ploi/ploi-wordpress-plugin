@@ -38,8 +38,5 @@ function clear_ploi_caches() {
 				)
 			));
 		}
-	} else {
-		// Handle case where necessary keys are not set
-		// You may display an error message or perform other actions here
 	}
 }

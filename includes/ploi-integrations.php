@@ -17,6 +17,7 @@ function clear_ploi_caches_on_post_save($post_id) {
 
     clear_ploi_caches();
 }
+
 add_action('save_post', 'clear_ploi_caches_on_post_save');
 
 // Cache clearing hook integration for various plugins
