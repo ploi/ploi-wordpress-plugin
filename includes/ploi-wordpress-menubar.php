@@ -14,7 +14,7 @@ function add_clear_caches_to_admin_bar($wp_admin_bar) {
         $server_id = $ploi_settings_options['ploi_server_id']; // Server ID
         $site_id = $ploi_settings_options['ploi_site_id']; // Site ID
 
-        if (empty($ploi_api_key) || empty($server_id) || empty($site_id)) {
+        if (empty($ploi_api_key) || empty($server_id)) {
             $wp_admin_bar->add_node( array(
                 'id'     => 'setup-ploi-caches',
                 'title'  => 'Setup Ploi Cache',

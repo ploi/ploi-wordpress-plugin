@@ -27,8 +27,6 @@ class PloiSettings {
 			<br>You can find your API key <a target="_blank" href="https://ploi.io/profile/api-keys">here</a>. Toggle the read servers and read sites checkboxes.
 			<br>You can find your Server ID in the servers settings page under the card "Server details".
 			<br>You can find your Site ID in the site settings under the card "Site details".</p>
-			
-			<?php settings_errors(); ?>
 
 			<form method="post" action="options.php">
 				<?php
@@ -121,7 +119,7 @@ class PloiSettings {
 	}
 
 	public function ploi_settings_section_info() {
-		
+
 	}
 
 	public function ploi_api_key_callback() {
