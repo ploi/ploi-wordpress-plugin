@@ -22,8 +22,8 @@ After installation, you will have to generate a API key in Ploi: https://ploi.io
 
 == Changelog ==
 
-= 1.1.2 - X-X-2024 =
-* WIP
+= 1.1.2 - 07-11-2024 =
+* Bugfixes
 
 = 1.1.1 - 18-04-2024 =
 * Updated codebase to make the plugin leaner
