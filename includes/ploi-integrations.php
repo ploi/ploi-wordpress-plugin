@@ -28,7 +28,8 @@ $cache_clear_actions = [
     'wpfc_delete_cache',                  // WP Fastest Cache
     'flying_press_purge_url:after',       // FlyingPress - URL
     'flying_press_purge_pages:after',     // FlyingPress - Pages
-    'flying_press_purge_everything:after' // FlyingPress - Everything
+    'flying_press_purge_everything:after', // FlyingPress - Everything
+    'wp_ajax_bricks_save_post'              //BricksBuilder
 ];
 
 foreach ($cache_clear_actions as $action) {
